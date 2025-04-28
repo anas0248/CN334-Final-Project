@@ -9,12 +9,18 @@ class Customer(models.Model):
     tel = models.CharField(max_length=20, blank=True)
 
 class Payment(models.Model):
-    payment_owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    method = models.CharField(max_length=255)
-    card_no = models.CharField(max_length=255)
-    expired = models.CharField(max_length=5)
-    holder_name = models.CharField(max_length=500)
+    PAYMENT_STATUS = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
     
+    payment_method = models.CharField(max_length=50)
+    transaction_id = models.CharField(max_length=100)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
+    payment_date = models.DateTimeField(auto_now_add=True)
+
 
 
 

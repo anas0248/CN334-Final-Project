@@ -36,7 +36,23 @@ class CustomerView(APIView):
             'data': customer_serializer.data
         }
         return Response(content)
-    
+
+class UserView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, username=None):
+        if username:
+            try:
+                user = User.objects.get(username=username)
+                serializer = UserSerializer(user)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            users = User.objects.all()
+            serializer = UserSerializer(users, many=True)  # <<-- many=True ถ้าเป็น list
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
 class PaymentView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -53,3 +69,13 @@ class PaymentView(APIView):
             serializer.save()
             return Response({'data': serializer.data}, status=status.HTTP_201_CREATED)
         return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    
+class SummaryView(APIView):
+    def get(self, request):
+        total_customers = Customer.objects.count()
+
+        summary_data = {
+            "total_customers": total_customers,
+        }
+
+        return Response(summary_data, status=status.HTTP_200_OK)
