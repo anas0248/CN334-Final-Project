@@ -3,4 +3,7 @@ from order_management.models import *
 
 admin.site.register(Order)
 admin.site.register(OrderItem)
+admin.site.register(Payment)
+admin.site.register(Shipping)
+
 # Register your models here.

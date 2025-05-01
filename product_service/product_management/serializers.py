@@ -1,16 +1,10 @@
 from rest_framework import serializers
-from .models import Product,Shipping
-
+from .models import Product
+        
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = [
-            'id', 'name', 'scientific_name', 'description', 'size',
-            'plant_type', 'image_url', 'price', 'stock', 'category'
-        ]
+        fields = ['id', 'name', 'description', 'price', 'stock_quantity', 
+                  'category', 'is_active']
 
-class ShippingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Shipping
-        fields = ['id', 'method', 'fee']
         
