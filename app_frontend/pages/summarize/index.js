@@ -14,7 +14,6 @@ export default function SummaryPage() {
             try {
                 const token = localStorage.getItem("jwt_access")
 
-                // เรียกข้อมูลจากทั้ง 2 API พร้อมกัน
                 const [customerRes, productRes] = await Promise.all([
                     fetch('http://127.0.0.1:3342/summarize/', {
                         headers: { Authorization: `Bearer ${token}` }
@@ -24,15 +23,12 @@ export default function SummaryPage() {
                     })
                 ])
 
-                // ตรวจสอบข้อผิดพลาด
                 if (!customerRes.ok) throw new Error('Failed to fetch customer data')
                 if (!productRes.ok) throw new Error('Failed to fetch product data')
 
-                // ดึงข้อมูล JSON
                 const customerData = await customerRes.json()
                 const productData = await productRes.json()
                 console.log("Customer Data:", customerData)
-                // รวมข้อมูลสรุป
                 setSummary({
                     totaltotalCustomers: customerData.total_customers || 0,
                     totalProducts: productData.total_products || 0,
