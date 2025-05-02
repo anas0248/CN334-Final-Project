@@ -3,36 +3,47 @@ from django.contrib.auth.models import User
 from product_management.models import Product
 
 # Create your models here.
+  
 class Order(models.Model):
-    ORDER_STATUS = [
+    STATUS_CHOICES = [
         ('pending', 'Pending'),
-        ('processing', 'Processing'),
+        ('paid', 'Paid'),
         ('shipped', 'Shipped'),
-        ('delivered', 'Delivered'),
+        ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
     ]
-
+    
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    status = models.CharField(max_length=20, choices=ORDER_STATUS, default='pending')
-    shipping_address = models.TextField(default='Address not specified')
-    payment_method = models.CharField(max_length=50, default='cash')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    shipping_address = models.TextField()
+    payment_method = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"Order #{self.id} - {self.customer.username}"
-    
+        return f"Order #{self.id} by {self.customer.username}"
 
+        
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-    price_at_purchase = models.DecimalField(max_digits=10, decimal_places=2)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    quantity = models.PositiveIntegerField()
+    price_at_order_time = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def __str__(self):
-        return f"{self.quantity}x {self.product.name}"
-
-    def save(self, *args, **kwargs):
-        if not self.price_at_purchase:
-            self.price_at_purchase = self.product.price
-        super().save(*args, **kwargs)
+class Payment(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
+    payment_status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('paid', 'Paid'),
+        ('failed', 'Failed')
+    ])
+    payment_date = models.DateTimeField(null=True, blank=True)
+    transaction_reference = models.CharField(max_length=100, blank=True)
+    
+class Shipping(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
+    tracking_number = models.CharField(max_length=100, blank=True)
+    courier_name = models.CharField(max_length=100, blank=True)
+    shipped_date = models.DateTimeField(null=True, blank=True)
+    delivery_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=50, blank=True)

@@ -21,9 +21,7 @@ from order_management.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('products/', ProductView.as_view(), name='products'),
-    path('products/<product_id>/', ProductDetailView.as_view(), name='product-detail'),
-    path('shipping/', ShippingView.as_view(), name='shipping'),
-    path('order/byProductId/<product_id>/', OrderByProductIdView.as_view(), name='orders-by-product'),
-    path('summarize/', SummaryView.as_view(), name='summary'),
+    path('products/', ProductListCreate.as_view()),
+    path('orders/create/', OrderCreateView.as_view()),
+    path('orders/my/', MyOrdersView.as_view()),
 ]

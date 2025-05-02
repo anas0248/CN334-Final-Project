@@ -1,16 +1,14 @@
 from rest_framework import serializers
-from .models import Product,Shipping
-
+from .models import *
+        
 class ProductSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        slug_field='name', 
+        queryset=Category.objects.all()
+    )
     class Meta:
         model = Product
-        fields = [
-            'id', 'name', 'scientific_name', 'description', 'size',
-            'plant_type', 'image_url', 'price', 'stock', 'category'
-        ]
+        fields = ['id', 'name', 'description', 'price', 'image', 'stock_quantity', 
+                  'category', 'is_active']
 
-class ShippingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Shipping
-        fields = ['id', 'method', 'fee']
         

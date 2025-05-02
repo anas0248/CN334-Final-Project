@@ -1,36 +1,31 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from order_management.models import OrderItem,Order
-from product_management.models import Product
-from .serializers import OrderSerializer
+from rest_framework.permissions import IsAuthenticated
+from order_management.models import *
+from order_management.serializers import *
 
-# Create your views here.
+class OrderCreateView(APIView):
+    permission_classes = [IsAuthenticated]
 
-class OrderByProductIdView(APIView):
-    def get(self, request, product_id):
-        order_items = OrderItem.objects.filter(product_id=product_id)
-        
-        orders = [item.order for item in order_items]
-        
-        if not orders:
-            return Response(
-                {"message": "No orders found for this product."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        
-        serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-class SummaryView(APIView):
+    def post(self, request):
+        data = request.data.copy()
+        items_data = data.pop('items', [])
+        data['user'] = request.user.id
+        serializer = OrderSerializer(data=data)
+        if serializer.is_valid():
+            order = serializer.save()
+            for item in items_data:
+                item['order'] = order.id
+                item_serializer = OrderItemSerializer(data=item)
+                if item_serializer.is_valid():
+                    item_serializer.save()
+            return Response({"message": "Order created successfully"}, status=201)
+        return Response(serializer.errors, status=400)
+
+class MyOrdersView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
-        total_products = Product.objects.count()
-        total_orders = Order.objects.count()
-
-        summary_data = {
-            "total_products": total_products,
-            "total_orders": total_orders,
-        }
-
-        return Response(summary_data, status=status.HTTP_200_OK)
+        orders = Order.objects.filter(user=request.user)
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
