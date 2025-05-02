@@ -15,18 +15,22 @@ def register(request):
     if request.method == "POST":
         data = JSONParser().parse(request)
         try:
-            new_user = User.objects.create_user(
-                username=data['username'],
-                password=data['password'],
-                email=data.get('email', ''),
-                role=data.get('role', 'buyer'),
-                phone_number=data.get('phone_number', ''),
-                address=data.get('address', '')
-            )
+            new_user = User.objects.create_user(username=data['username'], password=data['password'])
         except:
-            return JsonResponse({"error": "Username already used."}, status=400)
-        return JsonResponse({"message": "User created successfully"}, status=201)
-    return JsonResponse({"error": "Method not allowed"}, status=405)
+            return JsonResponse({"error": "username already used."}, status=400)
+        
+        new_user.save()
+        data['user'] = new_user.id
+        customer_serializer = CustomerSerializer(data=data)
+        
+        if customer_serializer.is_valid():
+            customer_serializer.save()
+            return JsonResponse(customer_serializer.data, status=201)
+        
+        new_user.delete()
+        return JsonResponse({"error": "data not valid"}, status=400)
+    
+    return JsonResponse({"error": "method not allowed."}, status=405)
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]

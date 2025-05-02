@@ -5,7 +5,7 @@ from product_management.models import Product
 from product_management.serializers import ProductSerializer
 
 class ProductListCreate(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
         products = Product.objects.filter(is_active=True)
