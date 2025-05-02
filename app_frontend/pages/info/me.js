@@ -38,9 +38,7 @@ export default function myInfo() {
 
     if (!info) return <p>No profile data</p>
     else return (
-        <main
-            className='flex min-h-screen flex-col items-center justify-between'
-        >
+        <main className='flex min-h-screen flex-col items-center justify-between'>
             <div style={{ fontSize: "64px" }}
                 className="w-full flex flex-col justify-center items-center dark:drop-shadow-[0_0_0.3rem_#ffffff70]">
                 <div>{info.data.username} Info</div>

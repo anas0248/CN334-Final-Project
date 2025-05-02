@@ -27,9 +27,12 @@ export default function Login() {
           className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
           style={{
             backgroundImage: "url('1.jpg')",
-            filter: 'blur(5px)',
+            filter: 'blur(6px)',
           }}
         ></div>
+        <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-50"></div>
+        
+        
       
         {/* กล่องฟอร์ม */}
         <div className="relative z-10 bg-white p-10 rounded-lg shadow-md w-full max-w-md">

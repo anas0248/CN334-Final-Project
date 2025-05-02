@@ -3,15 +3,14 @@ import Link from 'next/link';
 
 export default function Header() {
   return (
-    <header className="bg-[#FFF4E5] text-black p-4 flex justify-between items-center">
-      <h1 className="text-xl  color-[#C7964E] font-bold">
-        <Link href="/">LOCONOMY</Link>
-      </h1>
-      <nav className="space-x-4">
-      <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
-        <Link href="/X" className='color-[#C7964E]'>HOME</Link>
-        <Link href="/Catagory" className='color-[#C7964E]'>CATEGORY</Link>
-      </nav>
-    </header>
+    <header className="absolute top-0 left-0 w-full z-20 px-8 py-4 flex justify-between items-center bg-transparent text-yellow-400">
+    <div className="font-bold text-lg">LOCONOMY</div>
+    <nav className="space-x-4">
+    <input type="text" placeholder="  Search" className="bg-transparent border border-yellow-500 rounded-xl input w-24 md:w-auto placeholder-yellow-500 hover:border-yellow-500"  />
+    <Link href="/Home" className="hover:underline">HOME</Link>
+    <Link href="/category" className="hover:underline">CATEGORY</Link>
+    </nav>
+  </header>
+    
   );
 }

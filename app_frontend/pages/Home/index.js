@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
     return (
       <>
@@ -5,8 +7,8 @@ export default function Home() {
     <div className="font-bold text-lg">LOCONOMY</div>
     <nav className="space-x-4">
     <input type="text" placeholder="  Search" className="bg-transparent border border-yellow-500 rounded-xl input w-24 md:w-auto placeholder-yellow-500 hover:border-yellow-500"  />
-      <a href="#" className="hover:underline">HOME</a>
-      <a href="#" className="hover:underline">CATEGORY</a>
+    <Link href="/Home" className="hover:underline">HOME</Link>
+    <Link href="/category" className="hover:underline">CATEGORY</Link>
     </nav>
   </header>
         <main className="relative h-screen w-full bg-cover bg-center" style={{ backgroundImage: "url('1.jpg')" }}>

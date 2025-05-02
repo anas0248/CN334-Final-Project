@@ -13,7 +13,11 @@ module.exports = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
         fontFamily: {
-          sans: ['"Instrument Sans"', 'sans-serif'],
+          // sans: ['Instrument Sans', 'sans-serif'],
+          instrument: ['Instrument Sans', 'sans-serif'],
+          // sans: ['Prompt', 'sans-serif'],
+          mitr: ['Mitr', 'sans-serif'],
+          // sans: ['Mitr', 'sans-serif'],
         },
     },
   },
