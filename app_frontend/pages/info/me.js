@@ -4,8 +4,9 @@ export default function myInfo() {
     const [info_list, setInfoList] = useState(null)
     useEffect(() => {
         const token = localStorage.getItem("jwt_access");
+        console.log("Token:", token);
 
-        fetch(`http://127.0.0.1:3342/api/myinfo`, {
+        fetch(`http://127.0.0.1:3342/profile/`, {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then((res) => res.json())
