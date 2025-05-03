@@ -55,7 +55,7 @@ export default function Category() {
                         {/*หัตถกรรมไม้*/}
                         <Link href="/category/woodenCraft" className="bg-[#754600] rounded-xl p-2 shadow text-center hover:scale-105 duration-500">
                             <div>
-                                <p className="text-3xl">หัตถกรรมไม้</p>
+                                <p className="text-2xl">หัตถกรรมไม้</p>
                                 <img src="8-Photoroom.png" className="w-full mx-auto" />
                             </div>
                         </Link>
@@ -64,7 +64,7 @@ export default function Category() {
                     {/* สมุนไพร */}
                     <Link href="/category/herb" className="  bg-[#e3bba3] text-white rounded-2xl p-4 shadow-md col-span-2 flex flex-col justify-between hover:scale-105 duration-500 ">
                         <div className="flex justify-between">
-                            <p className="font-boldd text-5xl ">สมุนไพร <p>เครื่องหอม</p></p>
+                            <p className="font-boldd text-5xl ">สมุนไพร<br/>เครื่องหอม</p>
                             <img src="9-Photoroom.png" alt="สมุนไพร" className="w-1/4 mx-auto self-end" />
                         </div>
                     </Link>
