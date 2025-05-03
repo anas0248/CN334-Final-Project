@@ -11,16 +11,15 @@ export default function Category() {
                 <div className="grid grid-cols-4 gap-6 max-w-7xl mx-auto">
 
                     {/* จักสาน */}
-                    <Link href="/" className="bg-[#d4a276] text-white rounded-2xl p-4 shadow-md col-span-3 row-span-1 flex flex-col justify-between hover:scale-105 duration-500">
+                    <Link href="/category/basketry" className="bg-[#d4a276] text-white rounded-2xl p-4 shadow-md col-span-3 row-span-1 flex flex-col justify-between hover:scale-105 duration-500">
                         <div className="flex items-center justify-center gap-4">
                             <p className="text-7xl font-boldd text-center">จักสาน</p>
                             <img src="3.png" alt="จักสาน" className="w-1/6 h-auto" />
                         </div>
                     </Link>
 
-
                     {/* เครื่องปั้นดินเผา */}
-                    <Link href="/category/earthware" className="bg-[#c38e4d] text-white rounded-2xl p-4 shadow-md row-span-2 flex flex-col justify-between hover:scale-105 duration-500">
+                    <Link href="/category/earthenware" className="bg-[#c38e4d] text-white rounded-2xl p-4 shadow-md row-span-2 flex flex-col justify-between hover:scale-105 duration-500">
                         <div>
                             <p className="text-4xl font-boldd">เครื่องปั้นดินเผา</p>
                             <img src="7.png" alt="เครื่องปั้น" className="w-full self-end" />
@@ -28,7 +27,7 @@ export default function Category() {
                     </Link>
 
                     {/* สิ่งทอ */}
-                    <Link href="/category/Textiles" className="bg-[#f5d5c5] text-white rounded-2xl p-4 row-span-2 shadow-md hover:scale-105 duration-500">
+                    <Link href="/category/textiles" className="bg-[#f5d5c5] text-white rounded-2xl p-4 row-span-2 shadow-md hover:scale-105 duration-500">
                         <div >
                             <p className="text-7xl font-boldd mt-2">สิ่งทอ</p>
                             <img src="2-Photoroom.png" alt="สิ่งทอ" className="w-full mt-4" />
@@ -46,9 +45,9 @@ export default function Category() {
                     
                     <div className="col-span-1 grid grid-cols-2 gap-10">
                         {/* กะลาพร้าว */}
-                        <Link href="/" className="bg-[#FFF3D9] rounded-xl p-2 shadow text-center hover:scale-105 duration-500">
+                        <Link href="/category/Coconutshell" className="bg-[#FFF3D9] rounded-xl p-2 shadow text-center hover:scale-105 duration-500">
                             <div >
-                                <p className="text-3xl text-black">กะลาพร้าว</p>
+                                <p className="text-2xl text-black">กะลาพร้าว</p>
                                 <img src="10-Photoroom.png" className="w-full mx-auto" />
                             </div>
                         </Link>

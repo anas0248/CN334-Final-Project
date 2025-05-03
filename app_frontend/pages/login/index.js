@@ -21,7 +21,7 @@ export default function Login() {
         // }
     }
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center bg-cover bg-center relative">
+        <main className="flex min-h-screen flex-col items-center justify-center bg-cover bg-center relative font-instrument">
         {/* เบลอพื้นหลัง */}
         <div
           className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
@@ -40,12 +40,12 @@ export default function Login() {
       
           <form onSubmit={onLogin} className="space-y-4 text-base">
             <div>
-              <label htmlFor="email" className="block mb-1 text-gray-700">อีเมล</label>
+              <label htmlFor="email" className="block mb-1 text-gray-700">ชื่อผู้ใช้</label>
               <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="name@example.com"
+                type="text" 
+                id="username"
+                name="username"
+                placeholder="username"
                 required
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
               />
@@ -62,6 +62,7 @@ export default function Login() {
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
               />
             </div>
+            
       
             <button
               type="submit"

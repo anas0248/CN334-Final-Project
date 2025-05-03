@@ -28,13 +28,17 @@ export default function Document() {
 
         <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&family=Noto+Sans+Thai:wght@100..900&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
 
+        <link href="https://fonts.googleapis.com/css2?family=Jaini+Purva&display=swap" rel="stylesheet" />
+
+        {/* Font Awesome CDN */}
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-          integrity="sha512-XoM9Jj9O+RC5jWwDJf+f+Hg1+2uT5OEfQ6C2vqLmQw7F4XeF8VTVynOmPMdjKkvS3F3M1TTkRBqJId6L+ewQ6g=="
+          integrity="sha512-yc8r2HbLhz5/3uHNe9L3MPZb8iVcAz7n+hCeBJgI9b43swLWTnHNDKpt1Zn5Mx9M15PMoxH4soU32CwGHGHgGQ=="
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
+
 
       </Head>
       <body>

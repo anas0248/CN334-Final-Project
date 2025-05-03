@@ -33,7 +33,7 @@ export default function Basket() {
   return (
     <>
     <Header></Header>
-    <div className="bg-orange-50 min-h-screen p-8 mt-10 text-black">
+    <div className="bg-orange-50 min-h-screen p-8 mt-10 text-black font-instrument">
       <h1 className="text-4xl font-bold mb-6">Basket</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
