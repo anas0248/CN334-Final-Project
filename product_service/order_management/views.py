@@ -9,16 +9,12 @@ class OrderCreateView(APIView):
 
     def post(self, request):
         data = request.data.copy()
-        items_data = data.pop('items', [])
-        data['user'] = request.user.id
-        serializer = OrderSerializer(data=data)
+        # items_data = data.pop('items', [])
+        # data['customer'] = request.user.id
+        
+        serializer = OrderSerializer(data=data, context={'request': request})
         if serializer.is_valid():
-            order = serializer.save()
-            for item in items_data:
-                item['order'] = order.id
-                item_serializer = OrderItemSerializer(data=item)
-                if item_serializer.is_valid():
-                    item_serializer.save()
+            serializer.save()
             return Response({"message": "Order created successfully"}, status=201)
         return Response(serializer.errors, status=400)
 
@@ -26,6 +22,7 @@ class MyOrdersView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        orders = Order.objects.filter(user=request.user)
+        # request.user = User.objects.get(id=1)
+        orders = Order.objects.filter(customer=request.user)
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)
