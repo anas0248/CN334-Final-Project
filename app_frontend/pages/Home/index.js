@@ -9,6 +9,8 @@ export default function Home() {
     <input type="text" placeholder="  Search" className="bg-transparent border border-yellow-500 rounded-xl input w-24 md:w-auto placeholder-yellow-500 hover:border-yellow-500"  />
     <Link href="/Home" className="hover:underline">HOME</Link>
     <Link href="/category" className="hover:underline">CATEGORY</Link>
+    <Link href="/category" className="hover:underline">CART</Link>
+    <Link href="/Profile" className="hover:underline">PROFILE</Link>
     </nav>
   </header>
         <main className="relative h-screen w-full bg-cover bg-center" style={{ backgroundImage: "url('1.jpg')" }}>

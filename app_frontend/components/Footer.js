@@ -6,7 +6,7 @@ export default function Footer() {
     <>    
     <footer>
       <hr/>
-      <div className='p-5 text-black text-center text-xl text-color-gray-400'>มือไทยใจบ้าน
+      <div className='p-5 text-black  text-center text-xl text-color-gray-400'>มือไทยใจบ้าน
       </div>
     </footer>
     </>

@@ -17,7 +17,7 @@ module.exports = {
           instrument: ['Instrument Sans', 'sans-serif'],
           // sans: ['Prompt', 'sans-serif'],
           mitr: ['Mitr', 'sans-serif'],
-          // sans: ['Mitr', 'sans-serif'],
+          sans: ['Mitr', 'sans-serif'],
         },
     },
   },

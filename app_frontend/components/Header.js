@@ -9,6 +9,8 @@ export default function Header() {
     <input type="text" placeholder="  Search" className="bg-transparent border border-yellow-500 rounded-xl input w-24 md:w-auto placeholder-yellow-500 hover:border-yellow-500"  />
     <Link href="/Home" className="hover:underline">HOME</Link>
     <Link href="/category" className="hover:underline">CATEGORY</Link>
+    <Link href="/category" className="hover:underline">CART</Link>
+    <Link href="/profile" className="hover:underline">PROFILE</Link>
     </nav>
   </header>
     
