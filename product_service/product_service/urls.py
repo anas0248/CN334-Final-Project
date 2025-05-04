@@ -20,8 +20,13 @@ from product_management.views import *
 from order_management.views import *
 
 urlpatterns = [
+    path('test-cors/', test_cors),
     path('admin/', admin.site.urls),
     path('products/', ProductList.as_view()),
     path('orders/create/', OrderCreateView.as_view()),
     path('orders/my/', MyOrdersView.as_view()),
+    path('category/<category_slug>/', ProductCategoryList.as_view()),
+    path("cart/", CartView.as_view()),
+    path("cart/add/", AddToCartView.as_view()),
+    path("cart/clear/", ClearCartView.as_view()),
 ]
