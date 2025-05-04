@@ -1,7 +1,12 @@
-
 import Header from "@/components/Header";
 
+
 export default function Peyment() {
+  const order = {
+    id: "ORD123456",
+    name: "Somsak J.",
+    price: 599
+  };
 
   return (
     <>
@@ -13,18 +18,25 @@ export default function Peyment() {
           </h1>
 
           <div className="relative z-10 bg-white p-10 rounded-lg shadow-md w-full max-w-md">
-            <h1 className="text-3xl font-bold text-center text-[#8d4c2f] mb-6">
-              กรุณาชำระเงิน
+            <div className="text-green-600 text-9xl text-center">
+            
+            <i className="fa-solid fa-circle-check text-green-600 text-9xl animate__animated animate__tada"></i>
+
+            </div>
+
+            <h1 className="text-5xl mt-5 text-center text-[#8d4c2f] mb-6">
+              {order.price} Bath
             </h1>
 
-            <i className="fa-solid fa-check-circle text-green-500 text-2xl"></i>
+            <h1 className="text-2xl mt-2 text-center text-[#8d4c2f] mb-2">
+              ID: {order.id}
+            </h1>
 
+            <h1 className="text-2xl mt-2 text-center text-[#8d4c2f] mb-6">
+              Name: {order.name}
+            </h1>
 
-            
-            <button
-
-              className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 rounded-md transition mt-10"
-            >
+            <button className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 rounded-md transition mt-ถ">
               Confirm
             </button>
           </div>

@@ -11,9 +11,9 @@ export default function Peyment() {
         e.preventDefault();
 
         if (selectedMethod === "cod") {
-            router.push("/login");
+            router.push("/success");
         } else if (selectedMethod === "promptpay") {
-            router.push("/Home");
+            router.push("/payment/promtpay");
         }
     };
 

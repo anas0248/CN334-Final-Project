@@ -23,7 +23,7 @@ export default function Peyment() {
               กรุณาชำระเงิน
             </h1>
 
-            <img src="../QR.png" alt="QR Code" className="w-full mb-6" />
+            <img src="../QRcode.jpg" alt="QR Code" className="w-full mb-6" />
 
             <button
               onClick={handleConfirm}

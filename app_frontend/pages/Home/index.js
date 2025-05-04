@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <>
       <header className="absolute top-0 left-0 w-full z-20 px-8 py-4 flex justify-between items-center  text-yellow-400 font-instrument">
-        <div className="font-bold text-lg">LOCONOMY</div>
+        <div className="text-3xl font-jaini">LOCONOMY</div>
         <nav className="space-x-4">
           <input type="text" placeholder="  Search" className="bg-transparent border border-yellow-500 rounded-xl input w-24 md:w-auto placeholder-yellow-500 hover:border-yellow-500" />
           <Link href="/Home" className="hover:underline">HOME</Link>
