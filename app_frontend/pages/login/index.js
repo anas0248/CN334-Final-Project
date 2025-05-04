@@ -1,3 +1,5 @@
+import Swal from "sweetalert2";
+
 export default function Login() {
   async function onLogin(event) {
       event.preventDefault();
@@ -10,24 +12,41 @@ export default function Login() {
           body: formData,
       });
       try {
-          const data = await response.json();
-          console.log(response);
-          if (response.status == 401) {
-              alert("User not found!\nPlease register first!");
-              return;
-          }
-          localStorage.setItem('jwt_access', data.access);
-          console.log(localStorage.getItem('jwt_access'));
-          // Swal.fire({
-          //   title: "Login success!",
-          //   icon: "success"
-          // });
-          alert("Login success!")
-
-          window.location.href = '/category';
+        const data = await response.json();
+        console.log(response);
+      
+        if (response.status == 401) {
+          await Swal.fire({
+            title: "User not found!",
+            text: "Please register first!",
+            icon: "warning",
+            confirmButtonColor: "#754600"
+          });
+          return;
+        }
+      
+        localStorage.setItem('jwt_access', data.access);
+        console.log(localStorage.getItem('jwt_access'));
+      
+        await Swal.fire({
+          title: "Login success!",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+          iconColor: "#28a745"
+        });
+      
+        window.location.href = "/Home";
+      
       } catch (error) {
-          alert("Your username/password are incorrect!");
+        await Swal.fire({
+          title: "Login failed!",
+          text: "Your username or password is incorrect!",
+          icon: "error",
+          confirmButtonColor: "#D33"
+        });
       }
+      
   }
     return (
         <main className="flex min-h-screen flex-col items-center justify-center bg-cover bg-center relative font-instrument">

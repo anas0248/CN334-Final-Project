@@ -8,7 +8,7 @@ export default function Category() {
             <Header></Header>
             
             {/* <h1 className=" text-center text-black mt-20 text-7xl items-center justify-center">หมวดหมู่</h1> */}
-            <section className="p-6 sm:p-8 md:p-10 bg-[#fdf6ec] min-h-screen flex items-center justify-center mt-5">
+            <section className="p-6 sm:p-8 md:p-10 bg-[#fdf6ec] min-h-screen flex items-center justify-center mt-10">
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto w-full">
 
     {/* จักสาน */}

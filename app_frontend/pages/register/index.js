@@ -1,3 +1,5 @@
+import Swal from "sweetalert2";
+
 export default function register() {
   async function onregister(event) {
       event.preventDefault();
@@ -22,32 +24,44 @@ export default function register() {
       };
 
       try {
-          const response = await fetch('http://127.0.0.1:3342/register/', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(registrationData),
+        const response = await fetch('http://127.0.0.1:3342/register/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(registrationData),
+        });
+      
+        const data = await response.json();
+      
+        if (response.ok) {
+          await Swal.fire({
+            title: "สร้างบัญชีผู้ใช้สำเร็จ!",
+            text: "คุณสามารถเข้าสู่ระบบได้แล้ว",
+            icon: "success",
+            confirmButtonColor: "yellow", // สีตามธีมของคุณ
           });
-
-          const data = await response.json();
-
-          if (response.ok) {
-              alert("สร้างบัญชีผู้ใช้สำเร็จ! คุณสามารถเข้าสู่ระบบได้แล้ว"); 
-              window.location.href = '/login';
-          } else {
-              if (data && data.message) {
-                  alert(`เกิดข้อผิดพลาดในการสมัครสมาชิก: ${data.message}`);
-              } else {
-                  alert("เกิดข้อผิดพลาดในการสมัครสมาชิก");
-              }
-              console.error('Registration failed:', data);
-          }
-
+          window.location.href = '/login';
+        } else {
+          await Swal.fire({
+            title: "เกิดข้อผิดพลาดในการสมัครสมาชิก",
+            text: data?.message || "ไม่สามารถสมัครสมาชิกได้ในขณะนี้",
+            icon: "error",
+            confirmButtonColor: "#D33"
+          });
+          console.error('Registration failed:', data);
+        }
+      
       } catch (error) {
-          console.error('Fetch error during registration:', error);
-          alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+        console.error('Fetch error during registration:', error);
+        await Swal.fire({
+          title: "ข้อผิดพลาด",
+          text: "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์",
+          icon: "warning",
+          confirmButtonColor: "#F59E0B" // สีเหลืองอ่อน
+        });
       }
+      
   }
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-cover bg-center relative font-instrument">

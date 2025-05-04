@@ -8,6 +8,10 @@ export default function Peyment() {
     price: 599
   };
 
+  const confrim = () => {
+   window.location.href = "/profile";
+  };
+
   return (
     <>
       <Header />
@@ -36,7 +40,7 @@ export default function Peyment() {
               Name: {order.name}
             </h1>
 
-            <button className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 rounded-md transition mt-ถ">
+            <button onClick={confrim} className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 rounded-md transition mt-ถ">
               Confirm
             </button>
           </div>
