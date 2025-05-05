@@ -36,6 +36,7 @@ export default function Checkout() {
                         postcode: data.post_code || "",
                         tel: data.phone_number || "",
                     });
+                    console.log(formData.address);
                 } else {
                     console.error("Failed to fetch profile:", data);
                 }
@@ -48,6 +49,7 @@ export default function Checkout() {
 
         fetchAddress();
     }, []);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -55,38 +57,45 @@ export default function Checkout() {
         });
     };
 
-    useEffect(() => {
-        const checkout = async () => {
-            const token = localStorage.getItem("jwt_access");
-            try {
-                const res = await fetch("http://127.0.0.1:3342/profile/", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+    const addadress = async () => {
+        const token = localStorage.getItem("jwt_access");
+        const orderId = localStorage.getItem("order_id");
+        if (!orderId) {
+            alert("Missing order ID!");
+            setLoading(false);
+            return;
+        }
+        
+        try {
+            const res = await fetch(`http://127.0.0.1:3341/orders/edit/${orderId}/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    full_name: formData.name,
+                    phone_number: formData.tel,
+                    shipping_address: formData.address+" " + formData.province+" " + formData.postcode,
+                }),
+            });
 
-                const data = await res.json();
-                if (res.ok) {
-                    console.log(data);
-                    setFormData({
-                        name: data.fullname || "",
-                        address: data.address || "",
-                        province: data.province || "",
-                        postcode: data.post_code || "",
-                        tel: data.phone_number || "",
-                    });
-                } else {
-                    console.error("Failed to fetch profile:", data);
-                }
-            } catch (err) {
-                console.error("Error fetching address:", err);
-            } finally {
-                setLoading(false);
+            const data = await res.json();
+            if (res.ok) {
+                console.log("Address updated successfully:", data);
+                alert("Address updated successfully!");
+                window.location.href = '/payment';
+            } else {
+                console.error("Failed to update address:", data);
+                alert("Failed  to update address!");
             }
-        };
-
-        checkout();
-    }, []);
+        } catch (error) {
+            console.error("Error updating address:", error);
+            alert("Error updating address!");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -192,12 +201,13 @@ export default function Checkout() {
                                 />
                             </div>
 
-                            <Link
-                                href="/payment"
-                                className="block w-full bg-[#d89c42] hover:bg-[#b37a2d] text-white text-center font-semibold py-3 text-lg rounded-lg transition"
+                            <button
+                                type="button"
+                                onClick={addadress}
+                                className="w-full bg-[#d89c42] hover:bg-[#b37a2d] text-white text-center font-semibold py-3 text-lg rounded-lg transition"
                             >
                                 ไปหน้าชำระเงิน
-                            </Link>
+                            </button>
 
                         </form>
                     </div>

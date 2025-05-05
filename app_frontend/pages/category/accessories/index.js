@@ -33,36 +33,6 @@ export default function Accessories() {
     fetchAccessories();
   }, []);
 
-  const [products, setProducts] = useState([]);
-  const [address, setAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("COD");    
-  useEffect(() => {
-    const fetchCart = async () => {
-      const token = localStorage.getItem('jwt_access');
-      console.log(token);
-      try {
-        const res = await fetch('http://127.0.0.1:3341/cart', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await res.json();
-        if (res.ok) {
-          console.log(data);
-          setProducts(data); // สมมุติว่า backend ส่ง array ของสินค้าในตะกร้ามา
-        } else {
-          console.error(data);
-        }
-      } catch (err) {
-        console.error("Error fetching cart:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCart();
-  }, []);
-
   useEffect(() => {
     const fetchTest = async () => {
       try {
@@ -99,7 +69,11 @@ export default function Accessories() {
             console.log('Anas',item),
             <Link
               key={item.id}
-              href={item.image}
+              onClick={() => {
+                localStorage.setItem('productId', item.id);
+                console.log(`Product ID ${item.id} saved to localStorage`);
+              }}
+              href={'/product'}
               className="transition-transform transform hover:scale-105 duration-300"
             >
               <div className="w-full bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden">

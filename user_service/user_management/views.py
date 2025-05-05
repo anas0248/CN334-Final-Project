@@ -4,7 +4,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from user_management.models import User
+from user_management.models import *
 from user_management.serializers import *
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
@@ -40,6 +40,13 @@ def register(request):
     return JsonResponse({"error": "Invalid customer data", "details": customer_serializer.errors}, status=400)
 
 class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
+    
+class CustomerView(APIView):
     permission_classes = [IsAuthenticated]    
 
     def get(self, request):
@@ -49,3 +56,4 @@ class ProfileView(APIView):
             return Response({"error": "Customer profile not found."}, status=404)
         serializer = CustomerSerializer(customer)
         return Response(serializer.data)
+

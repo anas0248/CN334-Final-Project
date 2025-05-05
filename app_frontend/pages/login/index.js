@@ -19,7 +19,7 @@ export default function Login() {
             localStorage.setItem('jwt_access', data.access);
             console.log(localStorage.getItem('jwt_access'));
             alert("Login success!")
-            // window.location.href = '/category';
+            window.location.href = '/category';
         } catch (error) {
             alert("Your username/password are incorrect!");
         }
