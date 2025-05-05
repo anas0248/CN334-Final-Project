@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import ListAPIView
 from order_management.models import *
 from order_management.serializers import *
 from django.db import transaction
@@ -15,10 +16,15 @@ class OrderCreateView(APIView):
 
         serializer = OrderSerializer(data=data, context={'request': request})
         if serializer.is_valid():
-            order = serializer.save()  # Save the order instance
+            order = serializer.save() 
             return Response({"message": "Order created successfully", "order_id": order.id}, status=201)
 
         return Response(serializer.errors, status=400)
+    
+class AllUserOrdersView(ListAPIView):
+    permission_classes = [IsAuthenticated] 
+    queryset = Order.objects.prefetch_related('items').all()
+    serializer_class = OrderSerializer
     
 class MyOrdersView(APIView):
     permission_classes = [IsAuthenticated]

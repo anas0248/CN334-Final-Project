@@ -46,7 +46,7 @@ export default function Category() {
     {/* กลุ่มย่อย 2 ช่อง */}
     <div className="grid grid-cols-2 gap-4 col-span-1">
       {/* กะลาพร้าว */}
-      <Link href="/category/Coconutshell" className="bg-[#FFF3D9] rounded-xl p-2 shadow text-center hover:scale-105 duration-500">
+      <Link href="/category/coconutshell" className="bg-[#FFF3D9] rounded-xl p-2 shadow text-center hover:scale-105 duration-500">
         <p className="text-lg sm:text-2xl text-black">กะลาพร้าว</p>
         <img src="10-Photoroom.png" className="w-full mx-auto" />
       </Link>

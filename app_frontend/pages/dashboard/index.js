@@ -11,6 +11,7 @@ import {
 } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
 import Header from '@/components/Header';
+import { useRouter } from 'next/router';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -22,42 +23,139 @@ export default function Dashboard() {
     monthlyIncome: {},
     categoryDistribution: {}
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = {
-        orders: 100,
-        products: 300,
-        users: 50,
-        monthlyIncome: {
-          Jan: 112,
-          Feb: 10,
-          Mar: 225,
-          Apr: 134,
-          May: 101,
-          Jun: 80,
-          Jul: 50,
-          Aug: 100,
-          Sep: 200
-        },
-        categoryDistribution: {
-          'จักสาน': 30,
-          'สิ่งทอ': 20,
-          'เครื่องประดับ': 15,
-          'เครื่องปั้นดินเผา': 10,
-          'กะลามะพร้าว': 5,
-          'หัตถกรรมไม้': 10,
-          'สมุนไพรเครื่องหอม': 10
-        }
-      };
+      const token = localStorage.getItem('jwt_access');
+      if (!token) {
+        alert('You must be logged in to view the dashboard.');
+        router.push('/login');
+        return;
+      }
 
-      setData(result);
+      try {
+        const usersResponse = await fetch('http://127.0.0.1:3342/allcustomers/', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (usersResponse.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          localStorage.removeItem('jwt_access');
+          router.push('/login');
+          return;
+        }
+
+        if (!usersResponse.ok) {
+          throw new Error('Failed to fetch users data');
+        }
+
+        const usersResult = await usersResponse.json();
+        console.log('user', usersResult.length);
+
+        const productsResponse = await fetch('http://127.0.0.1:3341/products/', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (productsResponse.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          localStorage.removeItem('jwt_access');
+          router.push('/login');
+          return;
+        }
+
+        if (!productsResponse.ok) {
+          throw new Error('Failed to fetch products data');
+        }
+
+        const productsResult = await productsResponse.json();
+        console.log('product', productsResult.length);
+
+        const categoryDistribution = productsResult.reduce((acc, product) => {
+          const category = product.category || 'Uncategorized'; // Default to 'Uncategorized' if no category
+          acc[category] = (acc[category] || 0) + 1;
+          return acc;
+        }, {});
+
+        console.log('Category Distribution:', categoryDistribution);
+
+        const ordersResponse = await fetch('http://127.0.0.1:3341/allorders/', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (ordersResponse.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          localStorage.removeItem('jwt_access');
+          router.push('/login');
+          return;
+        }
+
+        if (!ordersResponse.ok) {
+          throw new Error('Failed to fetch products data');
+        }
+
+        const ordersResult = await ordersResponse.json();
+        console.log('order', ordersResult);
+
+        const totalIncomeByMonth = ordersResult.reduce((acc, order) => {
+          if (order.status === 'paid' || order.status === 'completed') {
+            const orderDate = new Date(order.order_date); 
+            const month = orderDate.toLocaleString('default', { month: 'short' }); 
+            acc[month] = (acc[month] || 0) + parseFloat(order.total_price); 
+            
+          }
+          console.log('order', acc);
+          return acc;
+        }, {});
+
+        console.log('Total Income:', totalIncomeByMonth);
+
+
+        setData({
+          orders: ordersResult.length,
+          products: productsResult.length,
+          users: usersResult.length,
+          monthlyIncome: totalIncomeByMonth,
+          categoryDistribution: categoryDistribution,
+        });
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
-  }, []);
+  }, [router]);
 
-  // สร้าง bar chart จาก data.monthlyIncome
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center text-xl text-gray-700">
+        Loading dashboard...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-screen flex items-center justify-center text-xl text-red-500">
+        {error}
+      </div>
+    );
+  }
+
   const barLabels = Object.keys(data.monthlyIncome);
   const barValues = Object.values(data.monthlyIncome);
 
@@ -82,7 +180,6 @@ export default function Dashboard() {
     },
   };
 
-  // สร้าง pie chart จาก data.categoryDistribution
   const pieLabels = Object.keys(data.categoryDistribution);
   const pieValues = Object.values(data.categoryDistribution);
 

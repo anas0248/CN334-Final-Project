@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('products/', ProductList.as_view()),
     path('orders/create/', OrderCreateView.as_view()),
+    path('allorders/', AllUserOrdersView.as_view()),
     path('orders/my/', MyOrdersView.as_view()),
     path('orders/edit/<int:order_id>/', EditOrderView.as_view()),
     path('category/<category_slug>/', ProductCategoryList.as_view()),

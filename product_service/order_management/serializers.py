@@ -16,8 +16,8 @@ class OrderItemWriteSerializer(serializers.ModelSerializer):
         fields = ['product', 'quantity']    
 
 class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True, read_only=True)  # For reading order items
-    items_write = OrderItemWriteSerializer(many=True, write_only=True, source='items')  # For writing order items
+    items = OrderItemSerializer(many=True, read_only=True) 
+    items_write = OrderItemWriteSerializer(many=True, write_only=True, source='items')
     customer = serializers.HiddenField(default=serializers.CurrentUserDefault())
     status = serializers.CharField(read_only=True)
 

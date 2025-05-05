@@ -18,6 +18,7 @@ module.exports = {
           // sans: ['Prompt', 'sans-serif'],
           mitr: ['Mitr', 'sans-serif'],
           sans: ['Mitr', 'sans-serif'],
+          jaini: ['"Jaini Purva"', 'cursive'],
         },
     },
   },

@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from user_management.models import *
@@ -56,4 +57,9 @@ class CustomerView(APIView):
             return Response({"error": "Customer profile not found."}, status=404)
         serializer = CustomerSerializer(customer)
         return Response(serializer.data)
+    
+class AllCustomersView(ListAPIView):
+    permission_classes = [IsAuthenticated]  # Only authenticated users can access this view
+    queryset = Customer.objects.all()  # Fetch all customers
+    serializer_class = CustomerSerializer
 

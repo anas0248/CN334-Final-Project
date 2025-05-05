@@ -31,13 +31,7 @@ export default function Document() {
         <link href="https://fonts.googleapis.com/css2?family=Jaini+Purva&display=swap" rel="stylesheet" />
 
         {/* Font Awesome CDN */}
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-          integrity="sha512-yc8r2HbLhz5/3uHNe9L3MPZb8iVcAz7n+hCeBJgI9b43swLWTnHNDKpt1Zn5Mx9M15PMoxH4soU32CwGHGHgGQ=="
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-        />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
       </Head>
