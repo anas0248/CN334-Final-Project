@@ -3,10 +3,10 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 
 export default function Peyment() {
-  const router = useRouter(); // เรียกใช้ Router
+  const router = useRouter();
 
   const handleConfirm = () => {
-    router.push("/success"); // ย้ายไปหน้าถัดไป
+    router.push("/success");
   };
 
   return (

@@ -3,19 +3,21 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
+import Footer from "@/components/Footer";
+
 
 export default function Textiles() {
   const [info, setInfo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const url = 'http://127.0.0.1:3341'
   const category = 'textiles';
+  const productApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
 
   useEffect(() => {
     const fetchAccessories = async () => {
       try {
-        console.log(`${url}/category/${category}/`);
-        const response = await fetch(`${url}/category/${category}/`);
+        console.log(`${productApiUrl}/category/${category}/`);
+        const response = await fetch(`${productApiUrl}/category/${category}/`);
         if (!response.ok) {
           const message = `An error occurred: ${response.status}`;
           throw new Error(message);
@@ -89,7 +91,7 @@ export default function Textiles() {
   return (
     <>
       <Header />
-      <main className="bg-[#fdf6ec] px-4 sm:px-6 lg:px-8 mt-20">
+      <main className="bg-[#fdf6ec] px-4 sm:px-6 lg:px-8 mt-20 min-h-screen">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-[#8d4c2f] my-8 sm:my-10">
           สิ่งทอ
         </h2>
@@ -121,6 +123,7 @@ export default function Textiles() {
           ))}
         </div>
       </main>
+      <Footer/>
     </>
   );
 }

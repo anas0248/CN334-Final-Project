@@ -16,45 +16,33 @@ class OrderItemWriteSerializer(serializers.ModelSerializer):
         fields = ['product', 'quantity']    
 
 class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemWriteSerializer(many=True, write_only=True)
+    items = OrderItemSerializer(many=True, read_only=True) 
+    items_write = OrderItemWriteSerializer(many=True, write_only=True, source='items')
     customer = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    status = serializers.CharField(read_only=True)
+
     class Meta:
         model = Order
-        fields = ['id', 'customer', 'order_date', 'status', 'total_price',
-                  'shipping_address', 'payment_method', 'items']
+        fields = ['id', 'customer', 'full_name', 'order_date', 'status', 'total_price',
+                  'shipping_address', 'phone_number', 'payment_method', 'items', 'items_write']
 
     def create(self, validated_data):
-        items_data = validated_data.pop('items', None) 
-        request = self.context.get('request')
-        user = request.user
+        items_data = validated_data.pop('items_write', [])
+        print("Validated Data:", validated_data)
+        validated_data.pop('items', None)
+        print("Validated Data:", validated_data)
+        print("Items Data:", items_data)
         order = Order.objects.create(**validated_data)
-
-        if items_data:
-            for item in items_data:
-                product = item.get('product')
-                quantity = item['quantity']
-                OrderItem.objects.create(
-                    order=order,
-                    product=product,
-                    quantity=quantity,
-                    price_at_order_time=product.price
-                )
-        else:
-            # ดึงจาก Cart ถ้าไม่มี items ส่งมา
-            from order_management.models import Cart, CartItem
-            cart = Cart.objects.filter(user=user).first()
-            if not cart or not cart.items.exists():
-                raise serializers.ValidationError("Cart is empty")
-
-            for cart_item in cart.items.all():
-                OrderItem.objects.create(
-                    order=order,
-                    product=cart_item.product,
-                    quantity=cart_item.quantity,
-                    price_at_order_time=cart_item.product.price
-                )
-            cart.items.all().delete()
-
+    
+        # Create OrderItem instances and associate them with the order
+        for item_data in items_data:
+            OrderItem.objects.create(
+                order=order,
+                product=item_data['product'],
+                quantity=item_data['quantity'],
+                price_at_order_time=item_data['product'].price  # Assuming `price` is a field in the Product model
+            )
+        
         return order
 
     

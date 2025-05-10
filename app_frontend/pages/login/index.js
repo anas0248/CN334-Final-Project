@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+const userApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
 
 export default function Login() {
   async function onLogin(event) {
@@ -7,7 +8,7 @@ export default function Login() {
       for (let pair of formData.entries()) {
           console.log(`${pair[0]}: ${pair[1]}`);
       }
-      const response = await fetch('http://127.0.0.1:3342/api/token/', {
+      const response = await fetch(`${userApiUrl}/api/token/`, {
           method: 'POST',
           body: formData,
       });
@@ -24,7 +25,7 @@ export default function Login() {
           });
           return;
         }
-      
+        
         localStorage.setItem('jwt_access', data.access);
         console.log(localStorage.getItem('jwt_access'));
       
@@ -46,6 +47,8 @@ export default function Login() {
           confirmButtonColor: "#D33"
         });
       }
+
+      
       
   }
     return (

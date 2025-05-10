@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import ListAPIView
 from order_management.models import *
 from order_management.serializers import *
 from django.db import transaction
@@ -11,23 +12,27 @@ class OrderCreateView(APIView):
 
     def post(self, request):
         data = request.data.copy()
-        # items_data = data.pop('items', [])
-        # data['customer'] = request.user.id
-        
+        data['customer'] = request.user.id  # Assign the authenticated user as the customer
+
         serializer = OrderSerializer(data=data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Order created successfully"}, status=201)
-        return Response(serializer.errors, status=400)
+            order = serializer.save() 
+            return Response({"message": "Order created successfully", "order_id": order.id}, status=201)
 
+        return Response(serializer.errors, status=400)
+    
+class AllUserOrdersView(ListAPIView):
+    permission_classes = [IsAuthenticated] 
+    queryset = Order.objects.prefetch_related('items').all()
+    serializer_class = OrderSerializer
+    
 class MyOrdersView(APIView):
     permission_classes = [IsAuthenticated]
-
     def get(self, request):
-        # request.user = User.objects.get(id=1)
-        orders = Order.objects.filter(customer=request.user)
+        orders = Order.objects.filter(customer=request.user).prefetch_related('items') # prefetch
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)
+
     
 class EditOrderView(APIView):
     permission_classes = [IsAuthenticated]
@@ -57,7 +62,7 @@ class AddToCartView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        product_id = request.data.get('product')
+        product_id = request.data.get('product_id')
         quantity = int(request.data.get('quantity', 1))
 
         cart, created = Cart.objects.get_or_create(user=request.user)
@@ -85,6 +90,41 @@ class ClearCartView(APIView):
             cart.items.all().delete()
             return Response({'message': 'Cart cleared'})
         return Response({'message': 'Cart is empty'}, status=204)
+    
+class DeleteItemFromCartView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, product_id):
+        cart = Cart.objects.filter(user=request.user).first()
+        if not cart:
+            return Response({'error': 'Cart not found'}, status=404)
+
+        try:
+            cart_item = CartItem.objects.get(cart=cart, product_id=product_id)
+            cart_item.delete()
+            return Response({'message': 'Item removed from cart'}, status=200)
+        except CartItem.DoesNotExist:
+            return Response({'error': 'Item not found in cart'}, status=404)
+
+class AdjustCartItemQuantityView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, product_id):
+        quantity = int(request.data.get('quantity', 1))
+        if quantity < 1:
+            return Response({'error': 'Quantity must be at least 1'}, status=400)
+
+        cart = Cart.objects.filter(user=request.user).first()
+        if not cart:
+            return Response({'error': 'Cart not found'}, status=404)
+
+        try:
+            cart_item = CartItem.objects.get(cart=cart, product_id=product_id)
+            cart_item.quantity = quantity
+            cart_item.save()
+            return Response({'message': 'Cart item quantity updated'}, status=200)
+        except CartItem.DoesNotExist:
+            return Response({'error': 'Item not found in cart'}, status=404)
 
 class ConvertCartToOrderView(APIView):
     permission_classes = [IsAuthenticated]
@@ -100,8 +140,6 @@ class ConvertCartToOrderView(APIView):
 
         order_data = {
             'customer': request.user,
-            'shipping_address': shipping_address,
-            'payment_method': payment_method,
             'total_price': sum(item.product.price * item.quantity for item in cart.items.all()),
         }
 
@@ -118,3 +156,29 @@ class ConvertCartToOrderView(APIView):
         cart.items.all().delete()
 
         return Response({'message': 'Order created successfully from cart', 'order_id': order.id}, status=201)
+    
+class MakeShippingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, order_id):
+        try:
+            order = Order.objects.get(id=order_id, customer=request.user)
+        except Order.DoesNotExist:
+            return Response({'error': 'Order not found'}, status=404)
+
+        shipping_data = request.data.copy()
+        shipping_data['order'] = order.id
+        serializer = ShippingSerializer(data=shipping_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    
+    def get(self, request, order_id):
+        try:
+            order = Order.objects.get(id=order_id, customer=request.user)
+            shipping = Shipping.objects.get(order=order)
+            serializer = ShippingSerializer(shipping)
+            return Response(serializer.data, status=201)
+        except Order.DoesNotExist:
+            return Response({'error': 'Order not found'}, status=404)

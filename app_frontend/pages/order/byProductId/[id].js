@@ -8,14 +8,15 @@ export default function OrdersByProduct() {
   const [error, setError] = useState(null)
   const router = useRouter()
   const { id } = router.query
-
+  const productApiUrl = process.env.NEXT_PUBLIC_USER_API_URL
+  
   useEffect(() => {
     if (!id) return
 
     const token = localStorage.getItem("jwt_access")
     console.log("Fetching orders for product:", id)
 
-    fetch(`http://127.0.0.1:3341/order/byProductId/${id}/`, {
+    fetch(`${productApiUrl}/order/byProductId/${id}/`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then((res) => {

@@ -3,19 +3,20 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
+import Footer from "@/components/Footer";
 
 export default function Accessories() {
   const [accessories, setAccessories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const url = 'http://127.0.0.1:3341'
   const category = 'woodenCraft';
+  const productApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
 
   useEffect(() => {
     const fetchAccessories = async () => {
       try {
-        console.log(`${url}/category/${category}/`);
-        const response = await fetch(`${url}/category/${category}/`);
+        console.log(`${productApiUrl}/category/${category}/`);
+        const response = await fetch(`${productApiUrl}/category/${category}/`);
         if (!response.ok) {
           const message = `An error occurred: ${response.status}`;
           throw new Error(message);
@@ -121,6 +122,7 @@ export default function Accessories() {
           ))}
         </div>
       </main>
+      <Footer/>
     </>
   );
 }

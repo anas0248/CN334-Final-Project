@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+const userApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
 
 export default function register() {
   async function onregister(event) {
@@ -24,7 +25,7 @@ export default function register() {
       };
 
       try {
-        const response = await fetch('http://127.0.0.1:3342/register/', {
+        const response = await fetch(`${userApiUrl}/register/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
