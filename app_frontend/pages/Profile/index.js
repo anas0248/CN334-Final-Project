@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Loading from "@/components/Loading";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -206,13 +207,12 @@ export default function Profile() {
     //==========================================
     
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-center text-gray-700">Loading profile data...</p>
-      </div>
-    );
-  }
+if (loading) {
+  return (
+    <Loading />
+  );
+}
+
 
   if (error) {
     return (
@@ -451,9 +451,6 @@ export default function Profile() {
                     </div>
                 </div>
             </main>
-
-
-
             <Footer />
         </>
     );

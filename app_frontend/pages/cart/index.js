@@ -7,16 +7,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import Swal from "sweetalert2";
 
-
-
 export default function Basket() {
   const [products, setProducts] = useState([]);
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const productApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
-
+  const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -46,13 +43,33 @@ export default function Basket() {
           }
         } else {
           console.error(data);
-          res.status === 401 ? alert("Your session has expired. Please log in again.") : alert("Failed to fetch cart items.");
+          if (res.status === 401) {
+            Swal.fire({
+              title: "Session Expired",
+              text: "Your session has expired. Please log in again.",
+              icon: "warning",
+              confirmButtonText: "OK",
+            });
+          } else {
+            Swal.fire({
+              title: "Error",
+              text: "Failed to fetch cart items.",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+          }
           localStorage.removeItem('jwt_access');
           router.push('/login');
           setProducts([]);
         }
       } catch (err) {
         console.error("Error fetching cart:", err);
+        Swal.fire({
+          title: "Error",
+          text: "An error occurred while fetching the cart.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       } finally {
         setLoading(false);
       }
@@ -148,7 +165,7 @@ export default function Basket() {
     };
     console.log(orderData.items);
     try {
-      const res = await fetch( `${productApiUrl}/cart/makeorder/`, {
+      const res = await fetch(`${productApiUrl}/cart/makeorder/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -159,28 +176,35 @@ export default function Basket() {
 
       const data = await res.json();
       if (res.ok) {
-        await Swal.fire({
-          title: "success!",
-          icon: "Order created successfully",
-          timer: 2000,
-          showConfirmButton: false,
-          iconColor: "#28a745"
+        Swal.fire({
+          title: "Success!",
+          text: "Order created successfully!",
+          icon: "success",
+          confirmButtonText: "Proceed to Checkout",
+        }).then(() => {
+          localStorage.setItem('order_id', data.order_id);
+          setProducts([]);
+          window.location.href = '/checkout';
         });
-              
-        console.log(data);
-        localStorage.setItem('order_id', data.order_id);
-        setProducts([]);
-        window.location.href = '/checkout';
       } else {
         console.error(data);
-        alert("❌ Failed to create order");
+        Swal.fire({
+          title: "Error",
+          text: "Failed to create order.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     } catch (err) {
       console.error("Network error:", err);
-      alert("❌ Network error");
+      Swal.fire({
+        title: "Error",
+        text: "A network error occurred. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
-
 
   return (
     <>

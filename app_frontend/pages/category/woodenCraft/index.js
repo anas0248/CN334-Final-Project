@@ -10,7 +10,7 @@ export default function Accessories() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const category = 'woodenCraft';
-  const productApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
+  const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
 
   useEffect(() => {
     const fetchAccessories = async () => {

@@ -1,164 +1,270 @@
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
+import React, { useState, useEffect } from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+} from 'chart.js';
+import { Bar, Pie } from 'react-chartjs-2';
+import Header from '@/components/Header';
+import { useRouter } from 'next/router';
 
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
-export default function OrdersByProduct() {
-  const [orders, setOrders] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const router = useRouter()
-  const { id } = router.query
-  const productApiUrl = process.env.NEXT_PUBLIC_USER_API_URL
+export default function Dashboard() {
+  const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
+  const userApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
+  
+  const [data, setData] = useState({
+    orders: 0,
+    products: 0,
+    users: 0,
+    monthlyIncome: {},
+    categoryDistribution: {}
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
-    if (!id) return
-
-    const token = localStorage.getItem("jwt_access")
-    console.log("Fetching orders for product:", id)
-
-    fetch(`${productApiUrl}/order/byProductId/${id}/`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then((res) => {
-      if (res.status === 401) {
-        setError("Unauthorized. Please log in again.")
-        return
+    const fetchData = async () => {
+      const token = localStorage.getItem('jwt_access');
+      if (!token) {
+        alert('You must be logged in to view the dashboard.');
+        router.push('/login');
+        return;
       }
-      if (res.status === 404) {
-        setError("No orders found for this product")
-        return
+
+      try {
+        const usersResponse = await fetch(`${userApiUrl}/allcustomers/`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (usersResponse.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          localStorage.removeItem('jwt_access');
+          router.push('/login');
+          return;
+        }
+
+        if (!usersResponse.ok) {
+          throw new Error('Failed to fetch users data');
+        }
+
+        const usersResult = await usersResponse.json();
+        console.log('user', usersResult.length);
+
+        const productsResponse = await fetch(`${productApiUrl}/products/`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (productsResponse.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          localStorage.removeItem('jwt_access');
+          router.push('/login');
+          return;
+        }
+
+        if (!productsResponse.ok) {
+          throw new Error('Failed to fetch products data');
+        }
+
+        const productsResult = await productsResponse.json();
+        console.log('product', productsResult.length);
+
+        const categoryDistribution = productsResult.reduce((acc, product) => {
+          const category = product.category || 'Uncategorized'; // Default to 'Uncategorized' if no category
+          acc[category] = (acc[category] || 0) + 1;
+          return acc;
+        }, {});
+
+        console.log('Category Distribution:', categoryDistribution);
+
+        const ordersResponse = await fetch(`${productApiUrl}/allorders/`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (ordersResponse.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          localStorage.removeItem('jwt_access');
+          router.push('/login');
+          return;
+        }
+
+        if (!ordersResponse.ok) {
+          throw new Error('Failed to fetch products data');
+        }
+
+        const ordersResult = await ordersResponse.json();
+        console.log('order', ordersResult);
+
+        const totalIncomeByMonth = ordersResult.reduce((acc, order) => {
+          if (order.status === 'paid' || order.status === 'completed') {
+            const orderDate = new Date(order.order_date); 
+            const month = orderDate.toLocaleString('default', { month: 'short' }); 
+            acc[month] = (acc[month] || 0) + parseFloat(order.total_price); 
+            
+          }
+          console.log('order', acc);
+          return acc;
+        }, {});
+
+        console.log('Total Income:', totalIncomeByMonth);
+
+
+        setData({
+          orders: ordersResult.length,
+          products: productsResult.length,
+          users: usersResult.length,
+          monthlyIncome: totalIncomeByMonth,
+          categoryDistribution: categoryDistribution,
+        });
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data. Please try again later.');
+      } finally {
+        setLoading(false);
       }
-      if (!res.ok) throw new Error("Failed to fetch orders")
-      return res.json()
-    })
-    .then((data) => {
-        console.log("Response data:", data)
-        setOrders(data)
-    //   if (data?.data) {
-    //     console.log('1')
-    //     setOrders(data)
-    //   } else {
-    //     console.log('2')
-    //     setError("No orders available")
-    //   }
-    })
-    .catch((err) => {
-      console.error("Fetch error:", err)
-      setError(err.message)
-    })
-    .finally(() => setLoading(false))
-  }, [id])
+    };
 
-  if (error) return (
-    <div className="p-8 text-center text-red-500">
-      {error} <br/>
-      <button 
-        className="mt-4 text-blue-500 hover:underline"
-        onClick={() => router.back()}
-      >
-        Go back
-      </button>
-    </div>
-  )
+    fetchData();
+  }, [router]);
 
-  if (loading) return (
-    <div className="p-8 text-center text-gray-500">
-      Loading orders...
-    </div>
-  )
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center text-xl text-gray-700">
+        Loading dashboard...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-screen flex items-center justify-center text-xl text-red-500">
+        {error}
+      </div>
+    );
+  }
+
+  const barLabels = Object.keys(data.monthlyIncome);
+  const barValues = Object.values(data.monthlyIncome);
+
+  const barData = {
+    labels: barLabels,
+    datasets: [
+      {
+        label: 'Total Income',
+        data: barValues,
+        backgroundColor: '#4E2F00',
+        borderColor: '#4E2F00',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const barOptions = {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: { display: true, text: 'Monthly Income' },
+    },
+  };
+
+  const pieLabels = Object.keys(data.categoryDistribution);
+  const pieValues = Object.values(data.categoryDistribution);
+
+  const pieData = {
+    labels: pieLabels,
+    datasets: [
+      {
+        label: 'Categories Distribution',
+        data: pieValues,
+        backgroundColor: [
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(255, 159, 64, 0.6)',
+          'rgba(153, 102, 255, 0.6)',
+          'rgba(255, 205, 86, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(201, 203, 207, 0.6)',
+          'rgba(255, 99, 132, 0.6)'
+        ],
+        borderColor: [
+          'rgba(75, 192, 192, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 205, 86, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(201, 203, 207, 1)',
+          'rgba(255, 99, 132, 1)'
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const pieOptions = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Category Distribution',
+      },
+    },
+  };
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">
-            Orders for Product #{id}
-          </h1>
-          <Link 
-            href="/product/all"
-            className="text-blue-500 hover:underline"
-          >
-            ← Back to Products
-          </Link>
-        </div>
+    <>
+      <Header />
+      <main className="h-screen justify-center items-center">
+        <div className="max-w-8xl p-4 mt-20">
+          <div className="grid grid-cols-4 gap-10">
+            {/* First column */}
+            <div className="col-span-1 grid grid-rows-4 gap-10 ">
+              <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
+                <h3 className="text-3xl text-yellow-600">Total Orders</h3>
+                <h4 className="text-6xl text-yellow-600 self-end">{data.orders}</h4>
+              </div>
+              <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
+                <h3 className="text-3xl  text-yellow-600">Total Product</h3>
+                <h4 className="text-6xl text-yellow-600 self-end">{data.products}</h4>
+              </div>
+              <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between ">
+                <h3 className="text-3xl text-yellow-600">Total Users</h3>
+                <h4 className="text-6xl text-yellow-600 self-end">{data.users}</h4>
+              </div>
+            </div>
 
-        {orders.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            No orders found for this product
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {orders.map(order => (
-              <div 
-                key={order.id}
-                className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
-              >
-                <div className="border-b pb-4 mb-4">
-                  <h2 className="text-xl font-semibold text-black">
-                    Order #{order.id}
-                  </h2>
-                  <div className="flex gap-4 mt-2 text-sm text-gray-500">
-                    <p>Customer: {order.customer?.username || 'N/A'}</p>
-                    <p>Date: {new Date(order.order_date).toLocaleDateString()}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="font-semibold">Total Price:</p>
-                    <p>${order.total_price}</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold">Status:</p>
-                    <span className={`px-2 py-1 rounded ${
-                      order.status === 'delivered' 
-                        ? 'bg-green-100 text-black' 
-                        : 'bg-yellow-100 text-black'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <p className="font-semibold mb-2">Shipping Address:</p>
-                  <p className="text-gray-600 whitespace-pre-line">
-                    {order.shipping_address}
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <p className="font-semibold mb-2">Payment Method:</p>
-                  <p className="text-gray-600">{order.payment_method}</p>
-                </div>
-
-                <div>
-                  <p className="font-semibold mb-4">Order Items:</p>
-                  <div className="space-y-2">
-                    {order.items?.map(item => (
-                      <div 
-                        key={item.id}
-                        className="flex justify-between items-center p-3 bg-gray-50 rounded"
-                      >
-                        <div>
-                          <p className="font-medium">{item.product?.name}</p>
-                          <p className="text-sm text-gray-500">
-                            Quantity: {item.quantity}
-                          </p>
-                        </div>
-                        <p className="text-gray-600">
-                          ${item.price_at_purchase}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+            {/* Second column */}
+            <div className="col-span-3 grid grid-rows-2 gap-10 ">
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-4xl text-yellow-600  ">Total Income</h3>
+                <div style={{ width: '100%', height: '300px' }}>
+                  <Bar data={barData} options={barOptions} />
                 </div>
               </div>
-            ))}
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-4xl text-yellow-600">All Category</h3>
+                <div style={{ width: '100%', height: '300px' }}>
+                  <Pie data={pieData} options={{ ...pieOptions, maintainAspectRatio: false }} />
+                </div>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-    </main>
-  )
+        </div>
+      </main>
+    </>
+  );
 }

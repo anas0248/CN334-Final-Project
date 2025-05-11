@@ -14,9 +14,8 @@ export default function Header() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('jwt_access');
-    localStorage.removeItem('jwt_refresh');
-    localStorage.removeItem('token');
+    localStorage.clear();
+    sessionStorage.clear();
     setIsLoggedIn(false);
     router.push('/login');
   };
@@ -53,9 +52,7 @@ export default function Header() {
       <i className="fa-solid fa-right-from-bracket"></i>
     </button>
   ) : (
-    <Link href="/login">
-      <i className="fa-solid fa-user hover:text-yellow-700 duration-500"> ลงทะเบียน </i>
-    </Link>
+<Link href="/login" className="hover:text-yellow-600 duration-500 font-instrument">LOGIN</Link>
   )}
 </nav>
 
