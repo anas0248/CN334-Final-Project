@@ -12,23 +12,19 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-from datetime import timedelta 
+from datetime import timedelta
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-q)d@zxjo28)dtwn9f_^xge^t*14)aoj!(sp^fzybd)dg&nd@$z'
+SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key')  # Use environment variable for security
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'  # Use environment variable to toggle debug mode
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')  # Allow multiple hosts via environment variable
 
 
 # Application definition
@@ -84,14 +80,9 @@ WSGI_APPLICATION = 'product_service.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
-        'PORT': 5432,
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL')  # Use DATABASE_URL from environment variables
+    )
 }
 
 
@@ -129,32 +120,32 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Directory for collected static files
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Django REST Framework
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
        'rest_framework_simplejwt.authentication.JWTAuthentication',
    )
 }
 
+# Simple JWT Configuration
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Set access token lifetime (e.g., 1 hour)
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Set access token lifetime (e.g., 30 minutes)
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # Set refresh token lifetime (e.g., 7 days)
     'ROTATE_REFRESH_TOKENS': True,               # Optional: Rotate refresh tokens on use
     'BLACKLIST_AFTER_ROTATION': True,            # Optional: Blacklist old refresh tokens
 }
 
-MEDIA_URL = '/app_frontend/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://127.0.0.1:3000", #  Adjust this to the origin of your frontend
-# ]
-#  OR, FOR DEVELOPMENT ONLY:
-CORS_ALLOW_ALL_ORIGINS = True #  THIS IS INSECURE FOR PRODUCTION
+# CORS Configuration
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'True') == 'True'  # Allow all origins for development
