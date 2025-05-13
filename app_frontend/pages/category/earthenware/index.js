@@ -43,7 +43,7 @@ export default function Earthenware() {
       const token = localStorage.getItem('jwt_access');
       console.log(token);
       try {
-        const res = await fetch('http://127.0.0.1:3341/cart', {
+        const res = await fetch(`${productapiurl}/cart`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -69,7 +69,7 @@ export default function Earthenware() {
     const fetchTest = async () => {
       try {
         console.log(`${url}/category/${category}/`);
-        const response = await fetch(`http://127.0.0.1:3341/test-cors/`);
+        const response = await fetch(`${productapiurl}/test-cors/`);
         const data = await response.text();
         console.log(data);
       } catch (error) {
