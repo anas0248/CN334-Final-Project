@@ -116,7 +116,7 @@ export default function Checkout() {
                     Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    items_write: orderData,
+                    items_write: thisorder,
                     full_name: formData.name,
                     phone_number: formData.tel,
                     shipping_address: formData.address + " " + formData.province + " " + formData.postcode,

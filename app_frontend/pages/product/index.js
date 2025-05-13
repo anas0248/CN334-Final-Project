@@ -87,6 +87,15 @@ export default function ProductDetail() {
 
     const buyNow = async () => {
         try {
+            console.log(JSON.stringify({
+                    items_write: [
+                        {
+                            product: product.id,
+                            quantity: 1,
+                        },
+                    ],
+                    total_price: product.price,
+                }),)
             const response = await fetch(`${productApiUrl}/orders/create/`, {
                 method: 'POST',
                 headers: {
@@ -101,6 +110,8 @@ export default function ProductDetail() {
                         },
                     ],
                     total_price: product.price,
+                    shipping_address: "",
+                    phone_number: "",
                 }),
             });
 
