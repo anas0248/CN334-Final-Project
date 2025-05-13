@@ -9,10 +9,16 @@ class CustomerSerializer(serializers.ModelSerializer):
         
 class UserProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
+    is_staff = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'full_name']
+        fields = ['id', 'username', 'email', 
+                  'first_name', 'last_name', 
+                  'full_name', 'is_staff']
 
     def get_full_name(self, obj):
         return obj.get_full_name()
+    
+    def get_is_staff(self, obj):
+        return obj.is_staff
