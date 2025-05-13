@@ -44,7 +44,6 @@ class EditOrderView(APIView):
             order = Order.objects.get(id=order_id, customer=request.user)
         except Order.DoesNotExist:
             return Response({'error': 'Order not found'}, status=404)
-
         serializer = OrderSerializer(order, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()

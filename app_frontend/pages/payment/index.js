@@ -8,7 +8,8 @@ export default function Payment() {
     const [selectedMethod, setSelectedMethod] = useState("");
     const router = useRouter();
     const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
-    
+    const [thisorder, setOrderData] = useState([]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem("jwt_access");
@@ -22,8 +23,10 @@ export default function Payment() {
             });
             return;
         }
-        
+
         try {
+
+
             const res = await fetch(`${productApiUrl}/orders/edit/${orderId}/`, {
                 method: "PUT",
                 headers: {
@@ -31,6 +34,7 @@ export default function Payment() {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
+                    items_write: thisorder,
                     "payment_method": selectedMethod,
                 }),
             });
@@ -70,8 +74,53 @@ export default function Payment() {
         }
     };
 
-    const selectpayment = (method) => {
-        setSelectedMethod(method);
+    const selectpayment = async (method) => {
+        const token = localStorage.getItem("jwt_access");
+        const orderId = localStorage.getItem("order_id");
+
+        try {
+            // Fetch order details
+            const orderRes = await fetch(`${productApiUrl}/orders/my/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!orderRes.ok) {
+                throw new Error("Failed to fetch order details");
+            }
+
+            const orders = await orderRes.json();
+            const currentOrder = orders.find(order => order.id == orderId);
+
+            if (!currentOrder) {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Order not found!",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            // Set order data
+            setOrderData(currentOrder.items.map(item => ({
+                product: item.product,
+                quantity: item.quantity,
+            })));
+            console.log("Order data:", currentOrder.items);
+
+            // Set selected payment method
+            setSelectedMethod(method);
+        } catch (error) {
+            console.error("Error fetching order details:", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Failed to fetch order details!",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
+        }
     };
 
     return (
@@ -98,8 +147,8 @@ export default function Payment() {
                                     onClick={() => selectpayment("Cash on Delivery")}
                                     className={`w-full flex items-center justify-center gap-3 border rounded-xl py-3 px-4 font-medium text-black transition
                                     ${selectedMethod === "Cash on Delivery"
-                                        ? "bg-[#d9f99d] border-green-500"
-                                        : "bg-white border-gray-300 hover:bg-gray-100"}`}
+                                            ? "bg-[#d9f99d] border-green-500"
+                                            : "bg-white border-gray-300 hover:bg-gray-100"}`}
                                 >
                                     <img
                                         src="/CurrencyExchange.png"
@@ -114,8 +163,8 @@ export default function Payment() {
                                     onClick={() => selectpayment("QR promptpay")}
                                     className={`w-full flex items-center justify-center gap-3 border rounded-xl py-3 px-4 font-medium text-black transition
                                     ${selectedMethod === "QR promptpay"
-                                        ? "bg-[#bfdbfe] border-blue-500"
-                                        : "bg-white border-gray-300 hover:bg-gray-100"}`}
+                                            ? "bg-[#bfdbfe] border-blue-500"
+                                            : "bg-white border-gray-300 hover:bg-gray-100"}`}
                                 >
                                     <img
                                         src="/promtpay.png"
@@ -132,8 +181,8 @@ export default function Payment() {
                                 disabled={!selectedMethod}
                                 className={`w-full py-3 rounded-xl text-white font-semibold text-lg transition
                                 ${selectedMethod
-                                    ? "bg-[#d89c42] hover:bg-[#b37a2d]"
-                                    : "bg-gray-400 cursor-not-allowed"}`}
+                                        ? "bg-[#d89c42] hover:bg-[#b37a2d]"
+                                        : "bg-gray-400 cursor-not-allowed"}`}
                             >
                                 ยืนยันการชำระเงิน
                             </button>
