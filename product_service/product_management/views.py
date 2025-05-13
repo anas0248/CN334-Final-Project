@@ -10,6 +10,7 @@ def test_cors(request):
     return HttpResponse("CORS Test Successful")
 
 class ProductList(APIView):
+
     def get(self, request):
         products = Product.objects.filter(is_active=True)
         serializer = ProductSerializer(products, many=True)

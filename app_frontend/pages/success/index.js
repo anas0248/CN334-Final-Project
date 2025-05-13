@@ -1,12 +1,27 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
 import Header from "@/components/Header";
+import Loading from '@/components/Loading';
+import Swal from "sweetalert2"; // นำเข้า SweetAlert2
 
-export default function Peyment() {
+export default function Success() {
     const [order, setOrder] = useState(null);
     const [shipping, setShipping] = useState(null); // State สำหรับเก็บข้อมูลการจัดส่ง
     const [loading, setLoading] = useState(true);
     const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
+
+    // ฟังก์ชัน handleConfirm
+    const handleConfirm = () => {
+        Swal.fire({
+            title: "ขอบคุณสำหรับการสั่งซื้อ!",
+            text: "เราจะดำเนินการจัดส่งสินค้าให้เร็วที่สุด",
+            icon: "success",
+            confirmButtonText: "ตกลง",
+        }).then(() => {
+            localStorage.removeItem("order_id");
+            window.location.href = "/profile";
+        });
+    };
 
     // Use useCallback to memoize the fetch function
     const fetchOrderAndShipping = useCallback(async () => {
@@ -14,7 +29,7 @@ export default function Peyment() {
         try {
             // Fetch order data
             const orderRes = await fetch(`${productApiUrl}/orders/my/`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem("jwt_access")}`}
+                headers: { Authorization: `Bearer ${localStorage.getItem("jwt_access")}` }
             });
             const orderData = await orderRes.json();
 
@@ -58,8 +73,7 @@ export default function Peyment() {
                     setShipping(shippingData);
                 } else if (shippingRes.status === 404) {
                     setShipping(null);
-                }
-                 else {
+                } else {
                     console.error("Failed to fetch shipping data:", shippingData);
                     if (!(shippingData && shippingData.order && Array.isArray(shippingData.order))) {
                         setShipping(null); // Only set to null if it's NOT the specific error
@@ -67,9 +81,7 @@ export default function Peyment() {
                 }
             } catch (shippingError) {
                 console.error("Error fetching shipping data:", shippingError);
-                //  setShipping(null);  // Don't set shipping to null in catch, handle in the if/else
             }
-
 
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -88,11 +100,7 @@ export default function Peyment() {
         return (
             <>
                 <Header />
-                <main className="p-6 md:p-10 bg-[#fdf6ec] min-h-screen flex items-center justify-center font-instrument">
-                    <div className="w-full max-w-md">
-                        <p className="text-red-500 text-center">Loading...</p>
-                    </div>
-                </main>
+                <Loading />
             </>
         );
     }
@@ -132,11 +140,9 @@ export default function Peyment() {
                         <h1 className="text-2xl mt-2 text-center text-[#8d4c2f] mb-6">
                             Name: {order.full_name}
                         </h1>
-                        <button className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 rounded-md transition mt-6"
-                            onClick={() => {
-                                localStorage.removeItem("order_id");
-                                window.location.href = "/category";
-                            }}
+                        <button
+                            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 rounded-md transition mt-6"
+                            onClick={handleConfirm} // ใช้ฟังก์ชัน handleConfirm
                         >
                             Confirm
                         </button>

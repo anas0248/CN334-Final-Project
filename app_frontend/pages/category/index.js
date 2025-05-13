@@ -11,7 +11,7 @@ export default function Category() {
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto w-full">
 
     {/* จักสาน */}
-    <Link href="/category/basketry" className="bg-[#d4a276] text-white rounded-2xl p-4 shadow-md lg:col-span-3 flex flex-col justify-between hover:scale-105 duration-500 ">
+    <Link href="/category/basketry" className="bg-[#d4a276] text-white rounded-2xl p-4 shadow-md lg:col-span-3 flex flex-col justify-between hover:scale-105 duration-500  ">
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
         <p className="text-4xl sm:text-6xl setData text-center">จักสาน</p>
         <img src="3.png" alt="จักสาน" className="w-1/3 sm:w-1/6 h-auto" />
@@ -58,7 +58,7 @@ export default function Category() {
     </div>
 
     {/* สมุนไพร */}
-    <Link href="/category/herb" className="bg-[#e3bba3] text-white rounded-2xl p-4 shadow-md lg:col-span-2 flex flex-col justify-between hover:scale-105 duration-500">
+    <Link href="/category/herb" className="bg-[#e3bba3] text-white rounded-2xl p-4 shadow-md lg:col-span-2 flex flex-col justify-between hover:scale-105 duration-500 ">
       <div className="flex flex-col sm:flex-row justify-between items-center">
         <p className="text-3xl sm:text-5xl setData text-center sm:text-left">สมุนไพร<br />เครื่องหอม</p>
         <img src="9-Photoroom.png" alt="สมุนไพร" className="w-1/2 sm:w-1/4 mt-4 sm:mt-0" />
@@ -69,22 +69,6 @@ export default function Category() {
 </section>
 
             <Footer></Footer>
-             <style jsx>{`
-        @keyframes fadeInUp {
-          0% {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-in-up {
-          animation: fadeInUp 0.6s ease-out both;
-        }
-      `}</style>
         </>
     );
 }

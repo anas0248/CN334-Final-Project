@@ -16,29 +16,57 @@ export default function Checkout() {
         postcode: "",
         tel: "",
     });
+    const [thisorder, setOrderData] = useState([]);
     const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         const fetchAddress = async () => {
             const token = localStorage.getItem("jwt_access");
             try {
-                const res = await fetch(`${userApiUrl}/profile/`, {
+                const customerres = await fetch(`${userApiUrl}/customer/`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-
-                const data = await res.json();
-                if (res.ok) {
-                    console.log(data);
+                const profileres = await fetch(`${userApiUrl}/profile/`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                const orderres = await fetch(`${productApiUrl}/orders/my/`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                const orderdata = await orderres.json();
+                const customerdata = await customerres.json();
+                const profiledata = await profileres.json();
+                if (customerres.ok && profileres.ok) {
+                    console.log(customerdata);
+                    console.log(profiledata);
                     setFormData({
-                        name: data.fullname || "",
-                        address: data.address || "",
-                        province: data.province || "",
-                        postcode: data.post_code || "",
-                        tel: data.phone_number || "",
+                        name: profiledata.full_name || "",
+                        address: customerdata.address || "",
+                        province: customerdata.province || "",
+                        postcode: customerdata.post_code || "",
+                        tel: customerdata.phone_number || "",
                     });
-                    console.log(formData.address);
+
+                    orderdata.forEach(order => {
+                        console.log("Order ID:", order.id);
+                        if (order.id == localStorage.getItem("order_id")) {
+                            console.log("Order ID matched:", order.items);
+                            const filteredItems = order.items.map(item => ({
+                                product: item.product,
+                                quantity: item.quantity,
+                            }));
+                            console.log("Filtered items:", filteredItems);
+                            setOrderData(filteredItems);
+                        }
+                    });
+
+                    console.log("Order data:", thisorder);
                 } else {
                     console.error("Failed to fetch profile:", data);
                 }
@@ -72,8 +100,15 @@ export default function Checkout() {
             setLoading(false);
             return;
         }
-        
+
         try {
+
+            console.log("Request Body:", JSON.stringify({
+                items_write: thisorder,
+                full_name: formData.name,
+                phone_number: formData.tel,
+                shipping_address: formData.address + " " + formData.province + " " + formData.postcode,
+            }));
             const res = await fetch(`${productApiUrl}/orders/edit/${orderId}/`, {
                 method: "PUT",
                 headers: {
@@ -81,6 +116,7 @@ export default function Checkout() {
                     Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({
+                    items_write: thisorder,
                     full_name: formData.name,
                     phone_number: formData.tel,
                     shipping_address: formData.address + " " + formData.province + " " + formData.postcode,

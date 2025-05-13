@@ -101,7 +101,11 @@ export default function Textiles() {
             console.log('Anas',item),
             <Link
               key={item.id}
-              href={item.image}
+              onClick={() => {
+                localStorage.setItem('productId', item.id);
+                console.log(`Product ID ${item.id} saved to localStorage`);
+              }}
+              href={'/product'}
               className="transition-transform transform hover:scale-105 duration-300"
             >
               <div className="w-full bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden">

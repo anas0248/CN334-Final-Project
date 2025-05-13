@@ -12,6 +12,7 @@ import {
 import { Bar, Pie } from 'react-chartjs-2';
 import Header from '@/components/Header';
 import { useRouter } from 'next/router';
+import Loading from '@/components/Loading';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -51,6 +52,12 @@ export default function Dashboard() {
           alert('Your session has expired. Please log in again.');
           localStorage.removeItem('jwt_access');
           router.push('/login');
+          return;
+        }
+
+        if (usersResponse.status === 403) {
+          alert('You do not have permission to access this resource.');
+          window.location.href = '/Home';
           return;
         }
 
@@ -145,9 +152,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center text-xl text-gray-700">
-        Loading dashboard...
-      </div>
+      <Loading/>
     );
   }
 

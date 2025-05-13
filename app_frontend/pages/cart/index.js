@@ -1,5 +1,3 @@
-// pages/basket.js
-"use client";
 
 import Header from "@/components/Header";
 import Link from "next/link";
@@ -46,17 +44,17 @@ export default function Basket() {
           console.error(data);
           if (res.status === 401) {
             Swal.fire({
-              title: "Session Expired",
-              text: "Your session has expired. Please log in again.",
+              title: "เซสชันหมดอายุ",
+              text: "กรุณาเข้าสู่ระบบใหม่อีกครั้ง",
               icon: "warning",
-              confirmButtonText: "OK",
+              confirmButtonText: "ตกลง",
             });
           } else {
             Swal.fire({
-              title: "Error",
-              text: "Failed to fetch cart items.",
+              title: "เกิดข้อผิดพลาด",
+              text: "ไม่สามารถดึงข้อมูลตะกร้าสินค้าได้",
               icon: "error",
-              confirmButtonText: "OK",
+              confirmButtonText: "ตกลง",
             });
           }
           localStorage.removeItem('jwt_access');
@@ -66,10 +64,10 @@ export default function Basket() {
       } catch (err) {
         console.error("Error fetching cart:", err);
         Swal.fire({
-          title: "Error",
-          text: "An error occurred while fetching the cart.",
+          title: "เกิดข้อผิดพลาด",
+          text: "เกิดข้อผิดพลาดขณะดึงข้อมูลตะกร้าสินค้า",
           icon: "error",
-          confirmButtonText: "OK",
+          confirmButtonText: "ตกลง",
         });
       } finally {
         setLoading(false);
@@ -92,9 +90,8 @@ export default function Basket() {
           body: JSON.stringify({ quantity }),
         }
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to update item quantity");
+     if (!response.ok) {
+        throw new Error("ไม่สามารถอัปเดตจำนวนสินค้าได้");
       }
 
       // Update the state
@@ -106,7 +103,12 @@ export default function Basket() {
 
       // alert("Item quantity updated");
     } catch (error) {
-      console.error("Error updating item quantity:", error);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด",
+        text: "ไม่สามารถอัปเดตจำนวนสินค้าได้",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -122,18 +124,28 @@ export default function Basket() {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to delete item from cart");
+     if (!response.ok) {
+        throw new Error("ไม่สามารถลบสินค้าออกจากตะกร้าได้");
       }
 
-      // Update the state
       setProducts((prevProducts) =>
         prevProducts.filter((p) => p.id !== productId)
       );
 
-      // alert("Item removed from cart");
+      Swal.fire({
+        title: "สำเร็จ",
+        text: "ลบสินค้าออกจากตะกร้าเรียบร้อยแล้ว",
+        icon: "success",
+        confirmButtonText: "ตกลง",
+      });
+
     } catch (error) {
-      console.error("Error deleting item from cart:", error);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด",
+        text: "ไม่สามารถลบสินค้าออกจากตะกร้าได้",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -175,34 +187,32 @@ export default function Basket() {
         body: JSON.stringify(orderData)
       });
 
-      const data = await res.json();
+     const data = await res.json();
       if (res.ok) {
         Swal.fire({
-          title: "Success!",
-          text: "Order created successfully!",
+          title: "สำเร็จ!",
+          text: "สร้างคำสั่งซื้อเรียบร้อยแล้ว",
           icon: "success",
-          confirmButtonText: "Proceed to Checkout",
+          confirmButtonText: "ไปที่หน้าชำระเงิน",
         }).then(() => {
           localStorage.setItem('order_id', data.order_id);
           setProducts([]);
           window.location.href = '/checkout';
         });
       } else {
-        console.error(data);
         Swal.fire({
-          title: "Error",
-          text: "Failed to create order.",
+          title: "เกิดข้อผิดพลาด",
+          text: "ไม่สามารถสร้างคำสั่งซื้อได้",
           icon: "error",
-          confirmButtonText: "OK",
+          confirmButtonText: "ตกลง",
         });
       }
     } catch (err) {
-      console.error("Network error:", err);
       Swal.fire({
-        title: "Error",
-        text: "A network error occurred. Please try again.",
+        title: "เกิดข้อผิดพลาด",
+        text: "เกิดข้อผิดพลาดขณะสร้างคำสั่งซื้อ กรุณาลองใหม่อีกครั้ง",
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: "ตกลง",
       });
     }
   };
@@ -214,13 +224,12 @@ export default function Basket() {
   <h1 className="text-4xl font-bold mb-6">Basket</h1>
 
   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    {/* LEFT: List or Empty Cart */}
+
     <div className="lg:col-span-2 space-y-4">
       {products.length === 0 && !loading ? (
         <div className="flex flex-col items-center justify-center text-gray-600 py-16 space-y-4">
-          <i className="fa-solid fa-cart-shopping text-8xl text-gray-400 animate-bounce" />
-          <h2 className="text-2xl font-semibold">ตะกร้าของคุณยังว่างเปล่า</h2>
-          <p className="text-md text-gray-500">ไปช้อปกันเถอะ 🛍️</p>
+          <i className="fa-solid fa-cart-shopping text-8xl text-gray-400 animate-[bounce_1s_ease-in-out_1.5]" />
+          <h2 className="text-2xl font-semibold delay-100">ตะกร้าของคุณยังว่างเปล่า</h2>
           <Link href="/category">
             <span className="mt-4 px-6 py-2 bg-yellow-800 text-white rounded-xl hover:bg-yellow-700 transition-all duration-200">
               ไปหน้าสินค้า
@@ -272,7 +281,7 @@ export default function Basket() {
       )}
     </div>
 
-    {/* RIGHT: Order Summary */}
+
     <div className="bg-[#FFE5BE] p-6 rounded-xl shadow h-fit">
       <h2 className="text-xl font-bold mb-4">Order</h2>
       <div className="space-y-2 text-lg">

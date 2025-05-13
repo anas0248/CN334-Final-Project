@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Loading from "@/components/Loading";
@@ -61,7 +61,7 @@ export default function Profile() {
           throw new Error(`Profile fetch failed: ${profileResponse.status}`);
         }
         const profileData = await profileResponse.json();
-
+        
         // Fetch customer data
         const customerResponse = await fetch(`${userApiUrl}/customer/`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -70,7 +70,7 @@ export default function Profile() {
           throw new Error(`Customer fetch failed: ${customerResponse.status}`);
         }
         const customerData = await customerResponse.json();
-
+        console.log("Customer data:", customerData);
         // Combine profile and customer data
         const combinedUser = {
           ...profileData,
@@ -145,29 +145,33 @@ export default function Profile() {
     const [showModalAddress, setShowModalAddress] = useState(false);
 
     const [formDatAddress, setFormDatAddress] = useState({
+      user: '',
       full_name: '',
       address: '',
       province: '',
-      post_code: ''
+      post_code: '',
+      phone_number: '',
     });
     
     const [formDataAccount, setFormDatAccount] = useState({
-      full_name: '',
-      email: ''
+      username: '',
+      email: '',
     });
 
     useEffect(() => {
       if (user) {
         setFormDatAddress({
+          user: user.user,
           full_name: user.full_name || '',
           address: user.address || '',
           province: user.province || '',
-          post_code: user.post_code || ''
+          post_code: user.post_code || '',
+          phone_number: user.phone_number || '',
         });
     
         setFormDatAccount({
-          full_name: user.full_name || '',
-          email: user.email || ''
+          username: user.username || '',
+          email: user.email || '',
         });
       }
     }, [user]);
@@ -179,32 +183,55 @@ export default function Profile() {
     //     post_code: user.post_code || ''
     // });
   
-    // const handleSaveAddress = async () => {
-    //     try {
-    //         console.log('Sending data:', formDatAddress);
-    //         // เรียก API ที่นี่ เช่น:
-    //         setShowModalAddress(false);
-    //     } catch (error) {
-    //         console.error('Failed to save:', error);
-    //     }
-    // };
+    const handleSaveAddress = async () => {
+        try {
+          console.log('Form data:', user.user);
+          console.log('Form data:', formDatAddress);
+            const response = await fetch(`http://127.0.0.1:3342/customer_update/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem("jwt_access")}`,
+                },
+                body: JSON.stringify(formDatAddress),
+            });
+            console.log('Response:', response.json());
+            if (response.ok) {
+                alert("Address updated successfully!");
+                window.location.reload();
+            }
+            setShowModalAddress(false);
+        } catch (error) {
+            console.error('Failed to save:', error);
+        }
+    };
   
     // const [formDataAccount, setFormDatAccount] = useState({
     //     full_name: user.full_name || '',
     //     email: user.email || '',
     // });
   
-    // const handleSaveAccount = async () => {
-    //     try {
-    //         console.log('Sending data:', formDataAccount);
-    //         // เรียก API ที่นี่ เช่น:
-    //         setShowModalAddress(false);
-    //     } catch (error) {
-    //         console.error('Failed to save:', error);
-    //     }
-    // };
+    const handleSaveAccount = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:3342/userprofile_update/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem("jwt_access")}`,
+                },
+                body: JSON.stringify(formDataAccount),
+            });
+            console.log('Response:', response.json());
+            if (response.ok) {
+                alert("Profile updated successfully!");
+                window.location.reload();
+            }
+            setShowModalAddress(false);
+        } catch (error) {
+            console.error('Failed to save:', error);
+        }
+    };
   
-    //==========================================
     
 
 if (loading) {
@@ -239,30 +266,33 @@ if (loading) {
                     <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 sm:mt-10 max-w-7xl mx-auto">
                         {/* My Account */}
                         <div className="bg-white rounded-xl shadow-md pb-4 sm:pb-5 flex">
-                            <div className="justify-between">
-                                <h2 className="text-center text-[#754600] font-bold text-2xl md:text-3xl mt-4 sm:mt-5">My Account</h2>
-                                <div className="text-[#754600] text-lg md:text-xl mx-4 sm:mx-6 mt-4 sm:mt-5 space-y-2">
-                                    <div className="flex gap-2 sm:gap-3">
-                                        <span className="font-medium">Username:</span>
-                                        <span>{user.username}</span>
-                                    </div>
-                                    <div className="flex gap-2 sm:gap-3">
-                                        <span className="font-medium">Email:</span>
-                                        <span>{user.email}</span>
-                                    </div>
-                                    <div className="flex gap-2 sm:gap-3">
-                                        <span className="font-medium">Phone:</span>
-                                        <span>{user.phone_number || user.tel || 'N/A'}</span>
-                                    </div>
-                                </div>
-                            </div>
+<div className="justify-between">
+  <h2 className="text-center text-[#754600] font-bold text-2xl md:text-3xl mt-4 sm:mt-5">
+    My Account
+  </h2>
+  <div className="text-[#754600] text-lg md:text-xl mx-4 sm:mx-6 mt-4 sm:mt-5 space-y-2">
+    <div className="flex gap-2 sm:gap-3 "> 
+      <span className="font-medium w-32">Username:</span>
+      <span>{user.username}</span>
+    </div>
+    <div className="flex gap-2 sm:gap-3">
+      <span className="font-medium w-32">Email:</span>
+      <span>{user.email}</span>
+    </div>
+    <div className="flex gap-2 sm:gap-3">
+      <span className="font-medium w-32">Phone:</span>
+      <span>{user.phone_number || user.tel || 'N/A'}</span>
+    </div>
+  </div>
+</div>
+
                             {/* Button to open the modal */}
                             <button
                                 onClick={() => setShowModal(true)}
                                 className="ml-auto mt-4 mr-4 p-2 rounded-full  text-yellow-700 "
                                 type="button"
                             >
-                                <i className="fa-solid fa-pen-to-square text-xl"></i>
+                                <i className="fa-solid fa-pen-to-square text-xl hover:text-yellow-800 hover:translate-y-[-5px] transition-transform duration-300"></i>
                             </button>
 
 
@@ -281,11 +311,11 @@ if (loading) {
                                         {/* Modal Body */}
                                         <form className="space-y-4">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700">Name</label>
+                                                <label className="block text-sm font-medium text-gray-700">User Name</label>
                                                 <input className=" text-black w-full border rounded px-3 text-black py-2 mt-1"
                                                     type="text"
-                                                    value={formDataAccount.full_name}
-                                                    onChange={(e) => setFormDatAccount({ ...formDataAccount, full_name: e.target.value })}
+                                                    value={formDataAccount.username}
+                                                    onChange={(e) => setFormDatAccount({ ...formDataAccount, username: e.target.value })}
                                                 />
                                             </div>
                                             <div>
@@ -301,7 +331,7 @@ if (loading) {
                                             <button onClick={() => setShowModal(false)} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
                                                 Cancel
                                             </button>
-                                            <button onClick={handleSaveAddress} className="px-4 py-2 bg-yellow-600 text-black rounded hover:bg-yellow-700">
+                                            <button onClick={handleSaveAccount} className="px-4 py-2 bg-yellow-600 text-black rounded hover:bg-yellow-700">
                                                 Save
                                             </button>
                                         </div>
@@ -317,24 +347,24 @@ if (loading) {
                                 <h2 className="text-center text-[#754600] font-bold text-2xl md:text-3xl mt-4 sm:mt-5">Address Book</h2>
                                 <div className="text-[#754600] mx-4 sm:mx-6 mt-4 sm:mt-5 text-lg md:text-xl space-y-2">
                                     <div className="flex gap-2 sm:gap-3">
-                                        <span className="font-medium">Full Name:</span>
+                                        <span className="font-medium w-32">Full Name:</span>
                                         <span>{user.full_name}</span>
                                     </div>
                                     <div className="flex gap-2 sm:gap-3">
-                                        <span className="font-medium">Address:</span>
+                                        <span className="font-medium w-32">Address:</span>
                                         <span>{user.address}</span>
                                     </div>
                                     <div className="flex gap-2 sm:gap-3">
-                                        <span className="font-medium">Province:</span>
+                                        <span className="font-medium w-32">Province:</span>
                                         <span>{user.province}</span>
                                     </div>
                                     <div className="flex gap-2 sm:gap-3">
-                                        <span className="font-medium">Postal Code:</span>
+                                        <span className="font-medium w-32">Postal Code:</span>
                                         <span>{user.post_code}</span>
                                     </div>
                                     <div className="flex gap-2 sm:gap-3">
-                                        <span className="font-medium">Phone:</span>
-                                        <span>{user.phone_number || user.tel || 'N/A'}</span>
+                                        <span className="font-medium w-32">Phone:</span>
+                                        <span>{user.phone_number || 'N/A'}</span>
                                     </div>
                                 </div>
                             </div>
@@ -344,7 +374,7 @@ if (loading) {
                                 className="ml-auto mt-4 mr-4 p-2 rounded-full  text-yellow-700 "
                                 type="button"
                             >
-                                <i className="fa-solid fa-pen-to-square text-xl"></i>
+                                <i className="fa-solid fa-pen-to-square text-xl hover:text-yellow-800 hover:translate-y-[-5px] transition-transform duration-300"></i>
                             </button>
 
                             {/* Modal */}
@@ -385,6 +415,12 @@ if (loading) {
                                                     value={formDatAddress.post_code}
                                                     onChange={(e) => setFormDatAddress({ ...formDatAddress, post_code: e.target.value })} />
                                             </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+                                                <input type="text" className="w-full border rounded px-3 text-black py-2 mt-1" placeholder=""
+                                                    value={formDatAddress.phone_number}
+                                                    onChange={(e) => setFormDatAddress({ ...formDatAddress, phone_number: e.target.value })} />
+                                            </div>
                                         </form>
 
                                         {/* Modal Footer */}
@@ -392,7 +428,7 @@ if (loading) {
                                             <button onClick={() => setShowModalAddress(false)} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
                                                 Cancel
                                             </button>
-                                            <button onClick={handleSaveAccount} className="px-4 py-2 bg-yellow-600 text-black rounded hover:bg-yellow-700">
+                                            <button onClick={handleSaveAddress} className="px-4 py-2 bg-yellow-600 text-black rounded hover:bg-yellow-700">
                                                 Save
                                             </button>
                                         </div>
@@ -422,12 +458,12 @@ if (loading) {
                                 </thead>
                                 <tbody className="bg-white">
                                     {orders.map((order, idx) => {
-                                        console.log('Anas1', order);
+                                        // console.log('Anas1', order);
                                         if (!order.shipping) {
                                             return null;
                                         }
                                         return order.items.map((item, itemIdx) => (
-                                            console.log('Anas2', item),
+                                            // console.log('Anas2', item),
                                             <tr key={`${idx}-${itemIdx}`} className="hover:bg-gray-50 transition-colors duration-200">
                                                 <td className="px-4 py-2 border-b border-gray-200">{order.id}</td>
                                                 <td className="px-4 py-2 border-b border-gray-200">{item.product_name}</td>
