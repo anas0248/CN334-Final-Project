@@ -1,34 +1,33 @@
-# Dockerfile
-FROM python:3.10-slim
+FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+WORKDIR /code
 
-WORKDIR /app
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# ติดตั้ง dependencies ที่จำเป็นสำหรับการ build
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        build-essential \
-        gcc \
-        libpq-dev \
-        libjpeg-dev \
-        zlib1g-dev \
-        python3-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# ติดตั้ง Python dependencies
+# Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt gunicorn psycopg2
 
-# คัดลอก source code
+# Copy source code
 COPY . .
 
-# รวบรวม static files
-RUN python manage.py collectstatic --noinput || true
+# Collect static files
+RUN python manage.py collectstatic --noinput || echo "No static files to collect"
 
-# เปิดพอร์ต 8000
-EXPOSE 8000
+# Environment variables
+ENV PYTHONUNBUFFERED=1
+ENV POSTGRES_NAME=postgres
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_HOST=postgres
+ENV PORT=8888
 
-# เริ่ม Gunicorn
-CMD ["gunicorn", "product_service.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Expose port
+EXPOSE 8888
+
+# Start application with Gunicorn
+CMD gunicorn --bind 0.0.0.0:${PORT} --workers 3 product_service.wsgi:application

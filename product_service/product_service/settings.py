@@ -86,13 +86,29 @@ WSGI_APPLICATION = 'product_service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': os.environ.get('POSTGRES_NAME', 'postgres'),
+        'USER': os.environ.get('POSTGRES_USER', 'cn334Admin'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'cn334Admin'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'db'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
 }
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# CORS settings (หากใช้ django-cors-headers)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://app-frontend.onrender.com",
+]
+
+# ตั้งค่า CSRF_TRUSTED_ORIGINS สำหรับ Django 4.0+
+CSRF_TRUSTED_ORIGINS = [
+    "https://app-frontend.onrender.com",
+    "https://product-api.onrender.com",
+    "https://user-api.onrender.com",]
 
 
 # Password validation
