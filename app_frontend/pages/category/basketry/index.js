@@ -85,7 +85,7 @@ export default function Basketry() {
     return <p className="text-center py-8">กำลังโหลดเครื่องประดับ...</p>;
   }
 
-  if (error) { <>
+  if (error) { 
     return <p className="text-center py-8 text-red-500">เกิดข้อผิดพลาดในการโหลดเครื่องประดับ</p>;
 
   }
