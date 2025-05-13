@@ -1,21 +1,25 @@
-FROM python:3.11-slim
+# Dockerfile
+FROM python:3.10-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies
+# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# Copy project files
 COPY . .
 
-# Collect static files
+# Collect static files (optional)
 RUN python manage.py collectstatic --noinput
 
+# Expose port
 EXPOSE 8000
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "product.wsgi:application"]
+
+# Run the app
+CMD ["gunicorn", "product_service.wsgi:application", "--bind", "0.0.0.0:8000"]
