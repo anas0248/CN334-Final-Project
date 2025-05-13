@@ -19,7 +19,9 @@ COPY . .
 # COPY jsconfig.json ./   ← ตรวจให้แน่ใจว่ามีใน repo
 
 # Build app (uses env vars)
-RUN npm run build
+RUN npm run build --verbose
+
+
 
 EXPOSE 3000
 
