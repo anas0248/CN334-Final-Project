@@ -15,8 +15,12 @@ ENV NEXT_PUBLIC_PRODUCT_API_URL=https://product-api.onrender.com
 ENV NEXT_PUBLIC_USER_API_URL=https://user-api.onrender.com
 ENV PORT=3000
 
+# Debugging: Print environment variables
+RUN echo "NEXT_PUBLIC_PRODUCT_API_URL=$NEXT_PUBLIC_PRODUCT_API_URL"
+RUN echo "NEXT_PUBLIC_USER_API_URL=$NEXT_PUBLIC_USER_API_URL"
+
 # Build app
-RUN npm run build
+RUN npm run build --verbose
 
 EXPOSE 3000
 
