@@ -1,20 +1,24 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Install system dependencies for native modules
+# 1. ติดตั้ง system dependencies
 RUN apk add --no-cache python3 make g++
 
-# Copy package files
-COPY package.json package-lock.json ./
+# 2. รับ build-time arguments
+ARG NEXT_PUBLIC_PRODUCT_API_URL
+ARG NEXT_PUBLIC_USER_API_URL
 
-# Install dependencies
+# 3. คัดลอกและติดตั้ง dependencies
+COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# Copy source code
+# 4. คัดลอก source code ทั้งหมด
 COPY . .
 
-# Build application
-RUN npm run build
+# 5. Build ด้วย environment variables
+RUN NEXT_PUBLIC_PRODUCT_API_URL=$NEXT_PUBLIC_PRODUCT_API_URL \
+    NEXT_PUBLIC_USER_API_URL=$NEXT_PUBLIC_USER_API_URL \
+    npm run build
 
 # Runtime stage
 FROM node:18-alpine AS runner
