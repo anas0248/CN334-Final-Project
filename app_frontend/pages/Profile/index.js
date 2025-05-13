@@ -98,7 +98,7 @@ export default function Profile() {
         setUser(combinedUser);
 
         // Fetch orders
-        const ordersResponse = await fetch("http://127.0.0.1:3341/orders/my/", {
+        const ordersResponse = await fetch(`${productapiurl}:3341/orders/my/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

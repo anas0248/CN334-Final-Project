@@ -21,7 +21,7 @@ export default function Accessories() {
           throw new Error(message);
         }
         const data = await response.json();
-        setAccessories(data);
+        setInfo(data);
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -33,11 +33,41 @@ export default function Accessories() {
     fetchAccessories();
   }, []);
 
+  const [products, setProducts] = useState([]);
+  const [address, setAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("COD");    
+  useEffect(() => {
+    const fetchCart = async () => {
+      const token = localStorage.getItem('jwt_access');
+      console.log(token);
+      try {
+        const res = await fetch(`${productapiurl}/cart`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          console.log(data);
+          setProducts(data); // สมมุติว่า backend ส่ง array ของสินค้าในตะกร้ามา
+        } else {
+          console.error(data);
+        }
+      } catch (err) {
+        console.error("Error fetching cart:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCart();
+  }, []);
+
   useEffect(() => {
     const fetchTest = async () => {
       try {
         console.log(`${url}/category/${category}/`);
-        const response = await fetch(`http://127.0.0.1:3341/test-cors/`);
+        const response = await fetch(`${productapiurl}/test-cors/`);
         const data = await response.text();
         console.log(data);
       } catch (error) {
