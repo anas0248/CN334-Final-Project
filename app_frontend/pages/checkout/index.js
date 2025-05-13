@@ -2,10 +2,13 @@
 import Header from "@/components/Header";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-
-
+import { useRouter } from 'next/router';
+import Footer from "@/components/Footer";
+import Swal from 'sweetalert2'; // นำเข้า SweetAlert2
 
 export default function Checkout() {
+    const userApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
+    const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
     const [formData, setFormData] = useState({
         name: "",
         address: "",
@@ -15,12 +18,11 @@ export default function Checkout() {
     });
     const [loading, setLoading] = useState(true);
 
-
     useEffect(() => {
         const fetchAddress = async () => {
             const token = localStorage.getItem("jwt_access");
             try {
-                const res = await fetch("http://127.0.0.1:3342/profile/", {
+                const res = await fetch(`${userApiUrl}/profile/`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -61,13 +63,18 @@ export default function Checkout() {
         const token = localStorage.getItem("jwt_access");
         const orderId = localStorage.getItem("order_id");
         if (!orderId) {
-            alert("Missing order ID!");
+            Swal.fire({
+                title: 'Error!',
+                text: 'Missing order ID!',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
             setLoading(false);
             return;
         }
         
         try {
-            const res = await fetch(`http://127.0.0.1:3341/orders/edit/${orderId}/`, {
+            const res = await fetch(`${productApiUrl}/orders/edit/${orderId}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -76,22 +83,38 @@ export default function Checkout() {
                 body: JSON.stringify({
                     full_name: formData.name,
                     phone_number: formData.tel,
-                    shipping_address: formData.address+" " + formData.province+" " + formData.postcode,
+                    shipping_address: formData.address + " " + formData.province + " " + formData.postcode,
                 }),
             });
 
             const data = await res.json();
             if (res.ok) {
                 console.log("Address updated successfully:", data);
-                alert("Address updated successfully!");
-                window.location.href = '/payment';
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Address updated successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'Proceed to Payment'
+                }).then(() => {
+                    window.location.href = '/payment';
+                });
             } else {
                 console.error("Failed to update address:", data);
-                alert("Failed  to update address!");
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to update address!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         } catch (error) {
             console.error("Error updating address:", error);
-            alert("Error updating address!");
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error updating address!',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         } finally {
             setLoading(false);
         }
@@ -213,6 +236,7 @@ export default function Checkout() {
                     </div>
                 </div>
             </main>
+            <Footer />
         </>
     );
 }

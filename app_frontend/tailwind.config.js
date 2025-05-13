@@ -20,7 +20,9 @@ module.exports = {
           sans: ['Mitr', 'sans-serif'],
           jaini: ['"Jaini Purva"', 'cursive'],
         },
+        
     },
+    
   },
   plugins: [],
 };

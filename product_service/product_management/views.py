@@ -10,7 +10,6 @@ def test_cors(request):
     return HttpResponse("CORS Test Successful")
 
 class ProductList(APIView):
-    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
         products = Product.objects.filter(is_active=True)

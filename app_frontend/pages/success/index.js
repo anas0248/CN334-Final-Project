@@ -6,13 +6,14 @@ export default function Peyment() {
     const [order, setOrder] = useState(null);
     const [shipping, setShipping] = useState(null); // State สำหรับเก็บข้อมูลการจัดส่ง
     const [loading, setLoading] = useState(true);
+    const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
 
     // Use useCallback to memoize the fetch function
     const fetchOrderAndShipping = useCallback(async () => {
         setLoading(true);
         try {
             // Fetch order data
-            const orderRes = await fetch(`http://127.0.0.1:3341/orders/my/`, {
+            const orderRes = await fetch(`${productApiUrl}/orders/my/`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("jwt_access")}`}
             });
             const orderData = await orderRes.json();
@@ -39,7 +40,7 @@ export default function Peyment() {
             console.log(myOrder);
 
             try { // Try-catch block for shipping fetch
-                const shippingRes = await fetch(`http://127.0.0.1:3341/shipping/${orderId}/`, {
+                const shippingRes = await fetch(`${productApiUrl}/shipping/${orderId}/`, {
                     method: 'POST',
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("jwt_access")}`,
@@ -120,7 +121,7 @@ export default function Peyment() {
 
                     <div className="relative z-10 bg-white p-10 rounded-lg shadow-md w-full max-w-md">
                         <div className="text-green-600 text-9xl text-center">
-                            <i className="fa-solid fa-circle-check text-green-600 text-9xl animate__animated animate__tada"></i>
+                            <i className="fa-solid fa-circle-check text-green-600 text-9xl animate-bounce"></i>
                         </div>
                         <h1 className="text-5xl mt-5 text-center text-[#8d4c2f] mb-6">
                             {order.total_price} Bath
@@ -145,4 +146,3 @@ export default function Peyment() {
         </>
     );
 }
-

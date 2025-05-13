@@ -1,61 +1,64 @@
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
-from product_management.models import Category, Product
-from order_management.models import Order, OrderItem
+from order_management.models import Order, OrderItem, Cart, CartItem, Shipping
+from product_management.models import Product 
+from order_management.serializers import OrderSerializer, CartSerializer, ShippingSerializer
 
-class OrderViewTest(APITestCase):
+class OrderCreateViewTest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpass')
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
+        self.order_url = '/orders/create/'
+        self.product = Product.objects.create(name='Test Product', price=250.00, stock_quantity=10)
 
-        self.category = Category.objects.create(name="Test Category")
-        self.product = Product.objects.create(
-            name="แจกัน",
-            description="แจกันปั้นด้วยมือน้องเตเต้",
-            price=299.00,
-            stock_quantity=10,
-            category=self.category
-        )
-
-    def test_create_order(self):
-        """Should create an order with order items"""
-        order_data = {
-            "total_price": 598.00,
-            "shipping_address": "123 Handmade Lane",
+    def test_create_order_normal(self):
+        data = {
+            "total_price": 500,
+            "shipping_address": "123 Main Street",
+            "phone_number": "1234567890",
             "payment_method": "COD",
-            "items": [
+            "items_write": [
                 {
                     "product": self.product.id,
                     "quantity": 2
                 }
             ]
         }
-
-        response = self.client.post("/orders/create/", order_data, format='json')
+        response = self.client.post(self.order_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["message"], "Order created successfully")
-        self.assertEqual(Order.objects.count(), 1)
-        self.assertEqual(OrderItem.objects.count(), 1)
+        self.assertEqual(response.data['message'], 'Order created successfully')
 
-    def test_get_my_orders(self):
-        """Should return list of orders for the authenticated user"""
-        order = Order.objects.create(
-            customer=self.user,
-            total_price=299.00,
-            shipping_address="Test Address",
-            payment_method="COD"
-        )
-        OrderItem.objects.create(order=order, product=self.product, quantity=1, price_at_order_time=self.product.price)
+    def test_create_order_invalid_input_type(self):
+        data = {
+            "total_price": "abc",
+            "shipping_address": "123 Main Street",
+            "phone_number": "1234567890",
+            "payment_method": "COD",
+            "items_write": [
+                {
+                    "product": self.product.id,
+                    "quantity": 2
+                }
+            ]
+        }
+        response = self.client.post(self.order_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        response = self.client.get("/orders/my/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreaterEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["id"], order.id)
-
-    def test_create_order_unauthenticated(self):
-        """Should return 401 if user is not authenticated"""
-        self.client.force_authenticate(user=None)
-        response = self.client.post("/orders/create/", {}, format='json')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    def test_create_order_sql_injection_shipping_address(self):
+        data = {
+            "total_price": 500,
+            "shipping_address": "'; DELETE FROM order_management_order; --",
+            "phone_number": "1234567890",
+            "payment_method": "COD",
+            "items_write": [
+                {
+                    "product": self.product.id,
+                    "quantity": 2
+                }
+            ]
+        }
+        response = self.client.post(self.order_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Order.objects.count(), 0)

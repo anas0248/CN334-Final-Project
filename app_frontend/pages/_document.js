@@ -6,8 +6,8 @@ export default function Document() {
       <Head>
 
         {/* เพิ่มการเชื่อมต่อกับ Google Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin /> */}
 
         {/* ฟอนต์ Instrument Sans */}
         <link

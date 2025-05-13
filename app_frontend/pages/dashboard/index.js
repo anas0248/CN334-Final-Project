@@ -16,6 +16,9 @@ import { useRouter } from 'next/router';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 export default function Dashboard() {
+  const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
+  const userApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
+  
   const [data, setData] = useState({
     orders: 0,
     products: 0,
@@ -37,7 +40,7 @@ export default function Dashboard() {
       }
 
       try {
-        const usersResponse = await fetch('http://127.0.0.1:3342/allcustomers/', {
+        const usersResponse = await fetch(`${userApiUrl}/allcustomers/`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -51,6 +54,12 @@ export default function Dashboard() {
           return;
         }
 
+        if (usersResponse.status === 403) {
+          alert('You do not have permission to access this resource.');
+          window.location.href = '/Home';
+          return;
+        }
+
         if (!usersResponse.ok) {
           throw new Error('Failed to fetch users data');
         }
@@ -58,7 +67,7 @@ export default function Dashboard() {
         const usersResult = await usersResponse.json();
         console.log('user', usersResult.length);
 
-        const productsResponse = await fetch('http://127.0.0.1:3341/products/', {
+        const productsResponse = await fetch(`${productApiUrl}/products/`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -87,7 +96,7 @@ export default function Dashboard() {
 
         console.log('Category Distribution:', categoryDistribution);
 
-        const ordersResponse = await fetch('http://127.0.0.1:3341/allorders/', {
+        const ordersResponse = await fetch(`${productApiUrl}/allorders/`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

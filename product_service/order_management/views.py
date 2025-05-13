@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import ListAPIView
 from order_management.models import *
 from order_management.serializers import *
@@ -12,7 +12,7 @@ class OrderCreateView(APIView):
 
     def post(self, request):
         data = request.data.copy()
-        data['customer'] = request.user.id  # Assign the authenticated user as the customer
+        data['customer'] = request.user.id
 
         serializer = OrderSerializer(data=data, context={'request': request})
         if serializer.is_valid():
@@ -22,14 +22,16 @@ class OrderCreateView(APIView):
         return Response(serializer.errors, status=400)
     
 class AllUserOrdersView(ListAPIView):
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAdminUser] 
     queryset = Order.objects.prefetch_related('items').all()
     serializer_class = OrderSerializer
     
 class MyOrdersView(APIView):
+    
     permission_classes = [IsAuthenticated]
+    
     def get(self, request):
-        orders = Order.objects.filter(customer=request.user).prefetch_related('items') # prefetch
+        orders = Order.objects.filter(customer=request.user).prefetch_related('items')
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)
 

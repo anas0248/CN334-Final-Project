@@ -2,26 +2,33 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
+import Swal from "sweetalert2"; // นำเข้า SweetAlert2
 
-export default function Peyment() {
+export default function Payment() {
     const [selectedMethod, setSelectedMethod] = useState("");
     const router = useRouter();
-
+    const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem("jwt_access");
         const orderId = localStorage.getItem("order_id");
         if (!orderId) {
-            alert("Missing order ID!");
+            Swal.fire({
+                title: "Error!",
+                text: "Missing order ID!",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
             return;
         }
         
         try {
-            const res = await fetch(`http://127.0.0.1:3341/orders/edit/${orderId}/`, {
+            const res = await fetch(`${productApiUrl}/orders/edit/${orderId}/`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     "payment_method": selectedMethod,
@@ -31,25 +38,41 @@ export default function Peyment() {
             const data = await res.json();
             if (res.ok) {
                 console.log("Payment method updated successfully:", data);
-                alert("Payment method updated successfully!");
-                if (selectedMethod === "Cash on Delivery") {
-                    window.location.href = '/success';
-                } else if (selectedMethod === "QR promptpay") {
-                    window.location.href = '/payment/promtpay';
-                }
+                Swal.fire({
+                    title: "Success!",
+                    text: "Payment method updated successfully!",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                }).then(() => {
+                    if (selectedMethod === "Cash on Delivery") {
+                        window.location.href = "/success";
+                    } else if (selectedMethod === "QR promptpay") {
+                        window.location.href = "/payment/promtpay";
+                    }
+                });
             } else {
                 console.error("Failed to update payment method:", data);
-                alert("Failed to update payment method!");
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to update payment method!",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
             }
         } catch (error) {
             console.error("Error updating payment method:", error);
-            alert("Error updating payment method!");
+            Swal.fire({
+                title: "Error!",
+                text: "Error updating payment method!",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
         }
     };
 
     const selectpayment = (method) => {
         setSelectedMethod(method);
-    }
+    };
 
     return (
         <>
@@ -57,7 +80,7 @@ export default function Peyment() {
             <main className="p-6 md:p-10 bg-[#fdf6ec] min-h-screen flex items-center justify-center font-instrument">
                 <div className="w-full max-w-md">
                     <h1 className="text-[#754600] text-4xl md:text-6xl font-bold text-center mb-8">
-                        Paymenty
+                        Payment
                     </h1>
 
                     {/* กล่องฟอร์ม */}
@@ -121,4 +144,3 @@ export default function Peyment() {
         </>
     );
 }
-

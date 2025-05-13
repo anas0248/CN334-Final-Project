@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Swal from 'sweetalert2'; // นำเข้า SweetAlert2
 
 export default function ProductDetail() {
     const [product, setProduct] = useState(null);
@@ -9,13 +10,14 @@ export default function ProductDetail() {
     const [error, setError] = useState(null);
     const id = localStorage.getItem('productId');
     const router = useRouter();
+    const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
 
     useEffect(() => {
         if (id) {
             const fetchProducts = async () => {
                 try {
                     setLoading(true);
-                    const response = await fetch(`http://127.0.0.1:3341/products/`);
+                    const response = await fetch(`${productApiUrl}/products/`);
                     if (!response.ok) {
                         throw new Error(`Failed to fetch products: ${response.status}`);
                     }
@@ -39,9 +41,8 @@ export default function ProductDetail() {
     }, [id]);
 
     const addToBasket = async () => {
-
         try {
-            const response = await fetch('http://127.0.0.1:3341/cart/add/', {
+            const response = await fetch(`${productApiUrl}/cart/add/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,25 +55,39 @@ export default function ProductDetail() {
             });
 
             if (!response.ok) {
-                alert('Your session has expired. Please log in again.');
+                Swal.fire({
+                    title: 'Session Expired',
+                    text: 'Your session has expired. Please log in again.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                });
                 localStorage.removeItem('jwt_access');
                 router.push('/login');
                 throw new Error(`Failed to add product to cart: ${response.status}`);
             }
 
             const data = await response.json();
-            alert(`${product.name} has been added to your cart!`);
+            Swal.fire({
+                title: 'Success!',
+                text: `${product.name} has been added to your cart!`,
+                icon: 'success',
+                confirmButtonText: 'OK',
+            });
             console.log('Cart response:', data);
         } catch (error) {
             console.error('Error adding product to cart:', error);
-            alert('Failed to add product to cart. Please try again.');
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to add product to cart. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
         }
     };
 
     const buyNow = async () => {
-
         try {
-            const response = await fetch('http://127.0.0.1:3341/orders/create/', {
+            const response = await fetch(`${productApiUrl}/orders/create/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,21 +105,36 @@ export default function ProductDetail() {
             });
 
             if (!response.ok) {
-                alert('Your session has expired. Please log in again.');
-        localStorage.removeItem('jwt_access');
-        router.push('/login');
+                Swal.fire({
+                    title: 'Session Expired',
+                    text: 'Your session has expired. Please log in again.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                });
+                localStorage.removeItem('jwt_access');
+                router.push('/login');
                 throw new Error(`Failed to create order: ${response.status}`);
             }
 
             const data = await response.json();
-            alert('✅ Order created successfully!');
-            localStorage.setItem('order_id', data.order_id);
+            Swal.fire({
+                title: 'Order Created!',
+                text: '✅ Order created successfully!',
+                icon: 'success',
+                confirmButtonText: 'Proceed to Checkout',
+            }).then(() => {
+                localStorage.setItem('order_id', data.order_id);
+                router.push('/checkout');
+            });
             console.log('Order response:', data);
-
-            router.push('/checkout');
         } catch (error) {
             console.error('Error creating order:', error);
-            alert('Failed to create order. Please try again.');
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to create order. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
         }
     };
 

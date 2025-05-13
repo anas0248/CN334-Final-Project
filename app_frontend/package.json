@@ -10,7 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "animate.css": "^4.1.1",
     "chart.js": "^4.4.9",
     "next": "^14.2.28",
     "react": "^18",

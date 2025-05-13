@@ -7,7 +7,7 @@ const mockProducts = [
   {
     id: '1',
     name: 'ต่างหูแก้วคริสตัล',
-    image: '../5-Photoroom.png',
+    image: '/5-Photoroom.png',
     description: `เติมความหวานให้ลุคของคุณด้วยต่างหูแก้วคริสตัลสุดน่ารัก ดีไซน์รูปดอกไม้สีชมพูสดใส ร้อยด้วยลูกปัดแก้วสีขาวมุก เพิ่มความวิบวับและน่ารักในทุกมุมมอง เหมาะสำหรับใส่ในชีวิตประจำวัน หรือโอกาสพิเศษ
 
 วัสดุ:
@@ -26,7 +26,7 @@ export default function ProductDetail() {
   const { id } = router.query;
 
   const [product, setProduct] = useState(null);
-  console.log('Product ID:', id);
+
   useEffect(() => {
     if (id) {
       const found = mockProducts.find((p) => p.id === id);

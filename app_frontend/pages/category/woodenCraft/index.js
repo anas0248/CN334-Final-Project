@@ -3,19 +3,20 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
+import Footer from "@/components/Footer";
 
 export default function Accessories() {
   const [accessories, setAccessories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const url = 'http://127.0.0.1:3341'
   const category = 'woodenCraft';
+  const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
 
   useEffect(() => {
     const fetchAccessories = async () => {
       try {
-        console.log(`${url}/category/${category}/`);
-        const response = await fetch(`${url}/category/${category}/`);
+        console.log(`${productApiUrl}/category/${category}/`);
+        const response = await fetch(`${productApiUrl}/category/${category}/`);
         if (!response.ok) {
           const message = `An error occurred: ${response.status}`;
           throw new Error(message);
@@ -35,7 +36,7 @@ export default function Accessories() {
 
   const [products, setProducts] = useState([]);
   const [address, setAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [paymentMethod, setPaymentMethod] = useState("COD");    
   useEffect(() => {
     const fetchCart = async () => {
       const token = localStorage.getItem('jwt_access');
@@ -78,7 +79,7 @@ export default function Accessories() {
     fetchTest();
   }, []);
 
-
+  
   if (loading) {
     return <p className="text-center py-8">กำลังโหลดเครื่องประดับ...</p>;
   }
@@ -96,7 +97,7 @@ export default function Accessories() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {accessories.map((item) => (
-            console.log('Anas', item),
+            console.log('Anas',item),
             <Link
               key={item.id}
               onClick={() => {
@@ -125,6 +126,7 @@ export default function Accessories() {
           ))}
         </div>
       </main>
+      <Footer/>
     </>
   );
 }
