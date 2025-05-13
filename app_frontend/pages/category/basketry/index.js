@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import Footer from "@/components/Footer";
-import ErrorPage from "@/components/Error";
+
 
 export default function Basketry() {
   const [info, setInfo] = useState([]);
@@ -87,7 +87,7 @@ export default function Basketry() {
 
   if (error) { <>
     return <p className="text-center py-8 text-red-500">เกิดข้อผิดพลาดในการโหลดเครื่องประดับ</p>;
-    <ErrorPage/></>
+
   }
   return (
     <>
