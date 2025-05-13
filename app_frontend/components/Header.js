@@ -21,7 +21,7 @@ export default function Header() {
   };
 
   return (
-    <header className="absolute top-0 left-0 w-full z-20 px-8 py-4 flex justify-between items-center bg-transparent text-yellow-400 font-instrument">
+   <header className="absolute top-0 left-0 w-full z-20 px-8 py-4 flex justify-between items-center bg-transparent text-yellow-400 font-instrument">
       <Link href="/Home" className="text-3xl font-jaini hover:text-yellow-600">LOCONOMY</Link>
       <nav className="space-x-4 flex items-center">
   <input
@@ -39,7 +39,7 @@ export default function Header() {
       <i className="fa-solid fa-bag-shopping hover:text-yellow-600 duration-500"></i>
     </Link>
     <Link href="/profile" className="text-2xl">
-      <i className="fa-solid fa-user hover:text-yellow-600 duration-500"></i>
+      <i className="fa-solid fa-user hover:text-yellow-600 duration-500" id="user-profile"></i>
     </Link>
     </>
   )}
@@ -48,8 +48,9 @@ export default function Header() {
     <button
       onClick={handleLogout}
       className="text-2xl text-red-500 hover:text-red-600 duration-500"
+      id="logout-button"
     >
-      <i className="fa-solid fa-right-from-bracket"></i>
+      <i className="fa-solid fa-right-from-bracket" ></i>
     </button>
   ) : (
 <Link href="/login" className="hover:text-yellow-600 duration-500 font-instrument">LOGIN</Link>

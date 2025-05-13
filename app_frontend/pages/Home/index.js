@@ -41,7 +41,7 @@ export default function Home() {
       <i className="fa-solid fa-bag-shopping hover:text-yellow-600 duration-500"></i>
     </Link>
     <Link href="/profile" className="text-2xl">
-      <i className="fa-solid fa-user hover:text-yellow-600 duration-500"></i>
+      <i className="fa-solid fa-user hover:text-yellow-600 duration-500" id="user-profile"></i>
     </Link>
     </>
   )}
@@ -50,8 +50,9 @@ export default function Home() {
     <button
       onClick={handleLogout}
       className="text-2xl text-red-500 hover:text-red-600 duration-500"
+      id="logout-button"
     >
-      <i className="fa-solid fa-right-from-bracket"></i>
+      <i className="fa-solid fa-right-from-bracket" ></i>
     </button>
   ) : (
 <Link href="/login" className="hover:text-yellow-600 duration-500 font-instrument">LOGIN</Link>

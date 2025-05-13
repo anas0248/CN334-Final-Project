@@ -71,7 +71,7 @@ export default function Login() {
 
   <form onSubmit={onLogin} className="space-y-4 text-base">
     <div>
-      <label htmlFor="email" className="block mb-1 text-gray-700">ชื่อผู้ใช้</label>
+      <label htmlFor="username" className="block mb-1 text-gray-700">ชื่อผู้ใช้</label>
       <input
         type="text" 
         id="username"
@@ -97,6 +97,7 @@ export default function Login() {
     <button
       type="submit"
       className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 rounded-md transition"
+      id="login-button"
     >
       เข้าสู่ระบบ
     </button>

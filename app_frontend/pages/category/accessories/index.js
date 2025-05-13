@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
+import ErrorPage from "@/components/Error";
 
 
 export default function Accessories() {
@@ -51,7 +52,10 @@ export default function Accessories() {
 
   
   if (loading) {
-    return <p className="text-center py-8">กำลังโหลดเครื่องประดับ...</p>;
+    return <>
+    <p className="text-center py-8">กำลังโหลดเครื่องประดับ...</p>;
+  
+    </>
   }
 
   if (error) {

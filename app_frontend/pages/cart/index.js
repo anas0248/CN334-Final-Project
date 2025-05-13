@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import Swal from "sweetalert2";
+import Footer from "@/components/Footer";
 
 export default function Basket() {
   const [products, setProducts] = useState([]);
@@ -209,59 +210,97 @@ export default function Basket() {
   return (
     <>
       <Header></Header>
-      <div className="bg-orange-50 min-h-screen p-8 mt-10 text-black font-instrument">
-        <h1 className="text-4xl font-bold mb-6">Basket</h1>
+<div className="bg-orange-50 min-h-screen p-8 mt-10 text-black font-instrument">
+  <h1 className="text-4xl font-bold mb-6">Basket</h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
-            {products.map((p, index) => (
-              <div key={p.id} className="flex items-center justify-between bg-white rounded-xl p-4 shadow">
-                <div className="flex items-center space-x-4">
-                  <img src={p.image} alt="product" className="w-16 h-16 object-cover rounded" />
-                  <div>
-                    <p className="font-semibold">{p.name}</p>
-                    <p className="text-gray-600">{p.price} Bath</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <button onClick={() => updateQuantity(index, -1)} className="px-2 bg-gray-200 rounded">−</button>
-                  <span>{p.quantity}</span>
-                  <button onClick={() => updateQuantity(index, 1)} className="px-2 bg-gray-200 rounded">+</button>
-                </div>
-
-                <button onClick={() => deleteItemFromCart(index)} className="bg-red-500 text-white px-4 py-1 rounded">
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div className="bg-[#FFE5BE] p-6 rounded-xl shadow">
-            <h2 className="text-xl font-bold mb-4">Order</h2>
-            <div className="space-y-2 text-lg">
-              <div className="flex justify-between">
-                <span>Sub Total:</span> 
-                <span className="font-semibold">{subTotal} Bath</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Delivery fee:</span> 
-                <span className="font-semibold">{delivery} Bath</span>
-              </div>
-              <hr />
-              <div className="flex justify-between font-bold text-lg">
-                <span>Total Price:</span> <span>{total} Bath</span>
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    {/* LEFT: List or Empty Cart */}
+    <div className="lg:col-span-2 space-y-4">
+      {products.length === 0 && !loading ? (
+        <div className="flex flex-col items-center justify-center text-gray-600 py-16 space-y-4">
+          <i className="fa-solid fa-cart-shopping text-8xl text-gray-400 animate-bounce" />
+          <h2 className="text-2xl font-semibold">ตะกร้าของคุณยังว่างเปล่า</h2>
+          <p className="text-md text-gray-500">ไปช้อปกันเถอะ 🛍️</p>
+          <Link href="/category">
+            <span className="mt-4 px-6 py-2 bg-yellow-800 text-white rounded-xl hover:bg-yellow-700 transition-all duration-200">
+              ไปหน้าสินค้า
+            </span>
+          </Link>
+        </div>
+      ) : (
+        products.map((p, index) => (
+          <div
+            key={p.id}
+            className="flex items-center justify-between bg-white rounded-xl p-4 shadow hover:shadow-md transition"
+          >
+            <div className="flex items-center space-x-4">
+              <img
+                src={p.image}
+                alt="product"
+                className="w-20 h-20 object-cover rounded-xl border"
+              />
+              <div>
+                <p className="font-semibold text-lg">{p.name}</p>
+                <p className="text-gray-600">{p.price} Bath</p>
               </div>
             </div>
+
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => updateQuantity(index, -1)}
+                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition"
+              >
+                −
+              </button>
+              <span className="min-w-[24px] text-center">{p.quantity}</span>
+              <button
+                onClick={() => updateQuantity(index, 1)}
+                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition"
+              >
+                +
+              </button>
+            </div>
+
             <button
-              onClick={handleCheckout}
-              className="mt-4 w-full bg-yellow-900 text-white py-2 rounded hover:bg-yellow-800"
+              onClick={() => deleteItemFromCart(p.id)}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
             >
-              Check out Now
+              ลบ
             </button>
           </div>
+        ))
+      )}
+    </div>
+
+    {/* RIGHT: Order Summary */}
+    <div className="bg-[#FFE5BE] p-6 rounded-xl shadow h-fit">
+      <h2 className="text-xl font-bold mb-4">Order</h2>
+      <div className="space-y-2 text-lg">
+        <div className="flex justify-between">
+          <span>Sub Total:</span>
+          <span className="font-semibold">{subTotal} Bath</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Delivery fee:</span>
+          <span className="font-semibold">{delivery} Bath</span>
+        </div>
+        <hr />
+        <div className="flex justify-between font-bold text-lg">
+          <span>Total Price:</span>
+          <span>{total} Bath</span>
         </div>
       </div>
+      <button
+        onClick={handleCheckout}
+        className="mt-4 w-full bg-yellow-900 text-white py-2 rounded hover:bg-yellow-800"
+      >
+        Check out Now
+      </button>
+    </div>
+  </div>
+</div> 
+<Footer/>
+
     </>
   );
 }
