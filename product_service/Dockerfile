@@ -1,25 +1,34 @@
 # Dockerfile
 FROM python:3.10-slim
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Set working directory
 WORKDIR /app
 
-# Install dependencies
+# ติดตั้ง dependencies ที่จำเป็นสำหรับการ build
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        gcc \
+        libpq-dev \
+        libjpeg-dev \
+        zlib1g-dev \
+        python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# ติดตั้ง Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
+# คัดลอก source code
 COPY . .
 
-# Collect static files (optional)
-RUN python manage.py collectstatic --noinput
+# รวบรวม static files
+RUN python manage.py collectstatic --noinput || true
 
-# Expose port
+# เปิดพอร์ต 8000
 EXPOSE 8000
 
-# Run the app
+# เริ่ม Gunicorn
 CMD ["gunicorn", "product_service.wsgi:application", "--bind", "0.0.0.0:8000"]
