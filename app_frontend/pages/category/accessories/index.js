@@ -3,8 +3,6 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
-import ErrorPage from "@/components/Error";
-
 
 export default function Accessories() {
   const [accessories, setAccessories] = useState([]);

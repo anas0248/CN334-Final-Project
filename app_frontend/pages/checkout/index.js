@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import Footer from "@/components/Footer";
 import Swal from 'sweetalert2'; // นำเข้า SweetAlert2
+import Loading from "@/components/Loading";
 
 export default function Checkout() {
     const userApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
@@ -87,84 +88,79 @@ export default function Checkout() {
         });
     };
 
-    const addadress = async () => {
-        const token = localStorage.getItem("jwt_access");
-        const orderId = localStorage.getItem("order_id");
-        if (!orderId) {
-            Swal.fire({
-                title: 'Error!',
-                text: 'Missing order ID!',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-            setLoading(false);
-            return;
-        }
+const addadress = async () => {
+    const token = localStorage.getItem("jwt_access");
+    const orderId = localStorage.getItem("order_id");
+    if (!orderId) {
+        Swal.fire({
+            title: 'เกิดข้อผิดพลาด!',
+            text: 'ไม่พบหมายเลขคำสั่งซื้อ!',
+            icon: 'error',
+            confirmButtonText: 'ตกลง'
+        });
+        setLoading(false);
+        return;
+    }
 
-        try {
-
-            console.log("Request Body:", JSON.stringify({
+    try {
+        console.log("Request Body:", JSON.stringify({
+            items_write: thisorder,
+            full_name: formData.name,
+            phone_number: formData.tel,
+            shipping_address: formData.address + " " + formData.province + " " + formData.postcode,
+        }));
+        const res = await fetch(`${productApiUrl}/orders/edit/${orderId}/`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
                 items_write: thisorder,
                 full_name: formData.name,
                 phone_number: formData.tel,
                 shipping_address: formData.address + " " + formData.province + " " + formData.postcode,
-            }));
-            const res = await fetch(`${productApiUrl}/orders/edit/${orderId}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    items_write: thisorder,
-                    full_name: formData.name,
-                    phone_number: formData.tel,
-                    shipping_address: formData.address + " " + formData.province + " " + formData.postcode,
-                }),
-            });
+            }),
+        });
 
-            const data = await res.json();
-            if (res.ok) {
-                console.log("Address updated successfully:", data);
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Address updated successfully!',
-                    icon: 'success',
-                    confirmButtonText: 'Proceed to Payment'
-                }).then(() => {
-                    window.location.href = '/payment';
-                });
-            } else {
-                console.error("Failed to update address:", data);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to update address!',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        } catch (error) {
-            console.error("Error updating address:", error);
+        const data = await res.json();
+        if (res.ok) {
+            console.log("อัปเดตที่อยู่สำเร็จ:", data);
             Swal.fire({
-                title: 'Error!',
-                text: 'Error updating address!',
-                icon: 'error',
-                confirmButtonText: 'OK'
+                title: 'สำเร็จ!',
+                text: 'อัปเดตที่อยู่สำเร็จ!',
+                icon: 'success',
+                confirmButtonText: 'ไปหน้าชำระเงิน'
+            }).then(() => {
+                window.location.href = '/payment';
             });
-        } finally {
-            setLoading(false);
+        } else {
+            console.error("ไม่สามารถอัปเดตที่อยู่ได้:", data);
+            Swal.fire({
+                title: 'เกิดข้อผิดพลาด!',
+                text: 'ไม่สามารถอัปเดตที่อยู่ได้!',
+                icon: 'error',
+                confirmButtonText: 'ตกลง'
+            });
         }
-    };
+    } catch (error) {
+        console.error("เกิดข้อผิดพลาดขณะอัปเดตที่อยู่:", error);
+        Swal.fire({
+            title: 'เกิดข้อผิดพลาด!',
+            text: 'เกิดข้อผิดพลาดขณะอัปเดตที่อยู่!',
+            icon: 'error',
+            confirmButtonText: 'ตกลง'
+        });
+    } finally {
+        setLoading(false);
+    }
+};
 
     if (loading) {
         return (
             <>
                 <Header />
-                <div className="p-6 md:p-10 bg-[#fdf6ec] min-h-screen flex items-center justify-center font-instrument">
-                    <div className="w-full max-w-md text-center">
-                        <p className="text-gray-700">Loading your profile information...</p>
-                    </div>
-                </div>
+                <Loading/>
             </>
         );
     }

@@ -32,6 +32,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 message="Invalid characters in shipping address.  Allowed characters are: a-zA-Z0-9 .,#-",
             ),
         ],
+        allow_blank=True,
     )
     phone_number = serializers.CharField(
         max_length=20,
@@ -41,6 +42,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 message="Phone number must be a 10-digit number.",
             ),
         ],
+        allow_blank=True,
     )
     total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     class Meta:

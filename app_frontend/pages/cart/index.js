@@ -282,30 +282,30 @@ export default function Basket() {
     </div>
 
 
-    <div className="bg-[#FFE5BE] p-6 rounded-xl shadow h-fit">
-      <h2 className="text-xl font-bold mb-4">Order</h2>
-      <div className="space-y-2 text-lg">
-        <div className="flex justify-between">
-          <span>Sub Total:</span>
-          <span className="font-semibold">{subTotal} Bath</span>
-        </div>
-        <div className="flex justify-between">
-          <span>Delivery fee:</span>
-          <span className="font-semibold">{delivery} Bath</span>
-        </div>
-        <hr />
-        <div className="flex justify-between font-bold text-lg">
-          <span>Total Price:</span>
-          <span>{total} Bath</span>
-        </div>
-      </div>
-      <button
-        onClick={handleCheckout}
-        className="mt-4 w-full bg-yellow-900 text-white py-2 rounded hover:bg-yellow-800"
-      >
-        Check out Now
-      </button>
+ <div className="bg-[#FFE5BE] p-6 rounded-xl shadow h-fit ">
+  <h2 className="text-xl font-bold mb-4">คำสั่งซื้อ</h2>
+  <div className="space-y-2 text-lg">
+    <div className="flex justify-between">
+      <span>ยอดรวม:</span>
+      <span className="font-semibold">{subTotal} บาท</span>
     </div>
+    <div className="flex justify-between">
+      <span>ค่าจัดส่ง:</span>
+      <span className="font-semibold">{delivery} บาท</span>
+    </div>
+    <hr className="border-t-2 border-black" />
+    <div className="flex justify-between font-bold text-lg">
+      <span>ราคารวมทั้งหมด:</span>
+      <span>{total} บาท</span>
+    </div>
+  </div>
+  <button
+    onClick={handleCheckout}
+    className="mt-4 w-full bg-yellow-900 text-white py-2 rounded hover:bg-yellow-800"
+  >
+    ชำระเงินตอนนี้
+  </button>
+</div>
   </div>
 </div> 
 <Footer/>

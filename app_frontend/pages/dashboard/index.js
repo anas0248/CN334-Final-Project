@@ -13,6 +13,7 @@ import { Bar, Pie } from 'react-chartjs-2';
 import Header from '@/components/Header';
 import { useRouter } from 'next/router';
 import Loading from '@/components/Loading';
+import Footer from '@/components/Footer';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -270,6 +271,7 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 }

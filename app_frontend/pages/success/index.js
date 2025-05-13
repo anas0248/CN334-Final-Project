@@ -14,7 +14,6 @@ export default function Success() {
     const handleConfirm = () => {
         Swal.fire({
             title: "ขอบคุณสำหรับการสั่งซื้อ!",
-            text: "เราจะดำเนินการจัดส่งสินค้าให้เร็วที่สุด",
             icon: "success",
             confirmButtonText: "ตกลง",
         }).then(() => {
@@ -23,13 +22,13 @@ export default function Success() {
         });
     };
 
-    // Use useCallback to memoize the fetch function
+        // Use useCallback to memoize the fetch function
     const fetchOrderAndShipping = useCallback(async () => {
         setLoading(true);
         try {
             // Fetch order data
             const orderRes = await fetch(`${productApiUrl}/orders/my/`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem("jwt_access")}` }
+                headers: { Authorization: `Bearer ${localStorage.getItem("jwt_access")}`}
             });
             const orderData = await orderRes.json();
 
@@ -73,7 +72,8 @@ export default function Success() {
                     setShipping(shippingData);
                 } else if (shippingRes.status === 404) {
                     setShipping(null);
-                } else {
+                }
+                 else {
                     console.error("Failed to fetch shipping data:", shippingData);
                     if (!(shippingData && shippingData.order && Array.isArray(shippingData.order))) {
                         setShipping(null); // Only set to null if it's NOT the specific error
@@ -81,7 +81,9 @@ export default function Success() {
                 }
             } catch (shippingError) {
                 console.error("Error fetching shipping data:", shippingError);
+                //  setShipping(null);  // Don't set shipping to null in catch, handle in the if/else
             }
+
 
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -129,7 +131,7 @@ export default function Success() {
 
                     <div className="relative z-10 bg-white p-10 rounded-lg shadow-md w-full max-w-md">
                         <div className="text-green-600 text-9xl text-center">
-                            <i className="fa-solid fa-circle-check text-green-600 text-9xl animate-bounce"></i>
+                            <i className="fa-solid fa-circle-check text-green-600 text-9xl animate-[bounce_1s_ease-in-out_5.5]"></i>
                         </div>
                         <h1 className="text-5xl mt-5 text-center text-[#8d4c2f] mb-6">
                             {order.total_price} Bath
@@ -144,7 +146,7 @@ export default function Success() {
                             className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 rounded-md transition mt-6"
                             onClick={handleConfirm} // ใช้ฟังก์ชัน handleConfirm
                         >
-                            Confirm
+                            ยืนยัน
                         </button>
                     </div>
                 </div>

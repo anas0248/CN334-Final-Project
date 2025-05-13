@@ -19,13 +19,13 @@ export default function ProductDetail() {
                     setLoading(true);
                     const response = await fetch(`${productApiUrl}/products/`);
                     if (!response.ok) {
-                        throw new Error(`Failed to fetch products: ${response.status}`);
+                        throw new Error(`ไม่สามารถดึงข้อมูลสินค้าได้: ${response.status}`);
                     }
                     const products = await response.json();
 
                     const matchedProduct = products.find((product) => product.id === parseInt(id));
                     if (!matchedProduct) {
-                        throw new Error('Product not found.');
+                        throw new Error('ไม่พบสินค้า');
                     }
 
                     setProduct(matchedProduct);
@@ -56,31 +56,31 @@ export default function ProductDetail() {
 
             if (!response.ok) {
                 Swal.fire({
-                    title: 'Session Expired',
-                    text: 'Your session has expired. Please log in again.',
+                    title: 'เซสชันหมดอายุ',
+                    text: 'กรุณาเข้าสู่ระบบใหม่อีกครั้ง',
                     icon: 'warning',
-                    confirmButtonText: 'OK',
+                    confirmButtonText: 'ตกลง',
                 });
                 localStorage.removeItem('jwt_access');
                 router.push('/login');
-                throw new Error(`Failed to add product to cart: ${response.status}`);
+                throw new Error(`ไม่สามารถเพิ่มสินค้าในตะกร้าได้: ${response.status}`);
             }
 
             const data = await response.json();
             Swal.fire({
-                title: 'Success!',
-                text: `${product.name} has been added to your cart!`,
+                title: 'สำเร็จ!',
+                text: `${product.name} ถูกเพิ่มในตะกร้าสินค้าเรียบร้อยแล้ว!`,
                 icon: 'success',
-                confirmButtonText: 'OK',
+                confirmButtonText: 'ตกลง',
             });
             console.log('Cart response:', data);
         } catch (error) {
             console.error('Error adding product to cart:', error);
             Swal.fire({
-                title: 'Error!',
-                text: 'Failed to add product to cart. Please try again.',
+                title: 'เกิดข้อผิดพลาด!',
+                text: 'ไม่สามารถเพิ่มสินค้าในตะกร้าได้ กรุณาลองใหม่อีกครั้ง',
                 icon: 'error',
-                confirmButtonText: 'OK',
+                confirmButtonText: 'ตกลง',
             });
         }
     };
@@ -101,27 +101,29 @@ export default function ProductDetail() {
                         },
                     ],
                     total_price: product.price,
+                    shipping_address: "",
+                    phone_number: "",
                 }),
             });
 
             if (!response.ok) {
                 Swal.fire({
-                    title: 'Session Expired',
-                    text: 'Your session has expired. Please log in again.',
+                    title: 'เซสชันหมดอายุ',
+                    text: 'กรุณาเข้าสู่ระบบใหม่อีกครั้ง',
                     icon: 'warning',
-                    confirmButtonText: 'OK',
+                    confirmButtonText: 'ตกลง',
                 });
                 localStorage.removeItem('jwt_access');
                 router.push('/login');
-                throw new Error(`Failed to create order: ${response.status}`);
+                throw new Error(`ไม่สามารถสร้างคำสั่งซื้อได้: ${response.status}`);
             }
 
             const data = await response.json();
             Swal.fire({
-                title: 'Order Created!',
-                text: '✅ Order created successfully!',
+                title: 'สร้างคำสั่งซื้อสำเร็จ!',
+                text: 'คำสั่งซื้อถูกสร้างเรียบร้อยแล้ว!',
                 icon: 'success',
-                confirmButtonText: 'Proceed to Checkout',
+                confirmButtonText: 'ไปที่หน้าชำระเงิน',
             }).then(() => {
                 localStorage.setItem('order_id', data.order_id);
                 router.push('/checkout');
@@ -130,16 +132,16 @@ export default function ProductDetail() {
         } catch (error) {
             console.error('Error creating order:', error);
             Swal.fire({
-                title: 'Error!',
-                text: 'Failed to create order. Please try again.',
+                title: 'เกิดข้อผิดพลาด!',
+                text: 'ไม่สามารถสร้างคำสั่งซื้อได้ กรุณาลองใหม่อีกครั้ง',
                 icon: 'error',
-                confirmButtonText: 'OK',
+                confirmButtonText: 'ตกลง',
             });
         }
     };
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center text-xl text-black">Loading...</div>;
+        return <div className="min-h-screen flex items-center justify-center text-xl text-black">กำลังโหลด...</div>;
     }
 
     if (error) {
@@ -147,7 +149,7 @@ export default function ProductDetail() {
     }
 
     if (!product) {
-        return <div className="min-h-screen flex items-center justify-center text-xl">Product not found.</div>;
+        return <div className="min-h-screen flex items-center justify-center text-xl">ไม่พบสินค้า</div>;
     }
 
     return (
@@ -155,12 +157,12 @@ export default function ProductDetail() {
             <Header />
             <main>
                 <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 text-black items-center justify-center min-h-screen gap-8">
-                    {/* Left: Product Image */}
+
                     <div className="grid place-items-center min-h-[300px]">
                         <img src={product.image} alt={product.name} className="w-full max-w-2xl h-auto" />
                     </div>
 
-                    {/* Right: Product Details */}
+    
                     <div className="p-5">
                         <div className="text-4xl md:text-6xl font-semibold mb-6">
                             <h1>{product.name}</h1>
@@ -176,13 +178,13 @@ export default function ProductDetail() {
                                 onClick={buyNow}
                                 className="bg-[#754600] text-white p-5 rounded hover:scale-105 duration-300"
                             >
-                                Buy Now
+                                ซื้อเลย
                             </button>
                             <button
                                 onClick={addToBasket}
                                 className="bg-[#D89C42] text-white p-5 rounded hover:scale-105 duration-300"
                             >
-                                Add to Basket
+                                เพิ่มในตะกร้า
                             </button>
                         </div>
                     </div>

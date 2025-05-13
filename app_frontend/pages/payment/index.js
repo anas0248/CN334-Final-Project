@@ -16,10 +16,10 @@ export default function Payment() {
         const orderId = localStorage.getItem("order_id");
         if (!orderId) {
             Swal.fire({
-                title: "Error!",
-                text: "Missing order ID!",
+                title: "เกิดข้อผิดพลาด!",
+                text: "ไม่พบหมายเลขคำสั่งซื้อ!",
                 icon: "error",
-                confirmButtonText: "OK",
+                confirmButtonText: "ตกลง",
             });
             return;
         }
@@ -43,10 +43,10 @@ export default function Payment() {
             if (res.ok) {
                 console.log("Payment method updated successfully:", data);
                 Swal.fire({
-                    title: "Success!",
-                    text: "Payment method updated successfully!",
+                    title: "สำเร็จ!",
+                    text: "บันทึกวิธีชำระเงินเรียบร้อยแล้ว!",
                     icon: "success",
-                    confirmButtonText: "OK",
+                    confirmButtonText: "ตกลง",
                 }).then(() => {
                     if (selectedMethod === "Cash on Delivery") {
                         window.location.href = "/success";
@@ -57,19 +57,19 @@ export default function Payment() {
             } else {
                 console.error("Failed to update payment method:", data);
                 Swal.fire({
-                    title: "Error!",
-                    text: "Failed to update payment method!",
+                    title: "เกิดข้อผิดพลาด!",
+                    text: "ไม่สามารถบันทึกวิธีชำระเงินได้!",
                     icon: "error",
-                    confirmButtonText: "OK",
+                    confirmButtonText: "ตกลง",
                 });
             }
         } catch (error) {
             console.error("Error updating payment method:", error);
             Swal.fire({
-                title: "Error!",
-                text: "Error updating payment method!",
+                title: "เกิดข้อผิดพลาด!",
+                text: "ไม่พบคำสั่งซื้อนี้!",
                 icon: "error",
-                confirmButtonText: "OK",
+                confirmButtonText: "ตกลง",
             });
         }
     };
@@ -95,10 +95,10 @@ export default function Payment() {
 
             if (!currentOrder) {
                 Swal.fire({
-                    title: "Error!",
-                    text: "Order not found!",
+                    title: "เกิดข้อผิดพลาด!",
+                    text: "ไม่พบคำสั่งซื้อ!",
                     icon: "error",
-                    confirmButtonText: "OK",
+                    confirmButtonText: "ตกลง",
                 });
                 return;
             }
@@ -115,10 +115,10 @@ export default function Payment() {
         } catch (error) {
             console.error("Error fetching order details:", error);
             Swal.fire({
-                title: "Error!",
-                text: "Failed to fetch order details!",
+                title: "เกิดข้อผิดพลาด!",
+                text: "ไม่สามารถโหลดข้อมูลคำสั่งซื้อได้!",
                 icon: "error",
-                confirmButtonText: "OK",
+                confirmButtonText: "ตกลง",
             });
         }
     };
