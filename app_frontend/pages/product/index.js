@@ -8,10 +8,17 @@ export default function ProductDetail() {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const id = localStorage.getItem('productId');
+    const [id, setId] = useState(null); // ใช้ useState แทน const id
     const router = useRouter();
     const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
 
+    useEffect(() => {
+        // เรียก localStorage ใน browser เท่านั้น
+        if (typeof window !== 'undefined') {
+            const storedId = localStorage.getItem('productId');
+            setId(storedId); // ตั้งค่า id เมื่อพร้อม
+        }
+    }, []);
     useEffect(() => {
         if (id) {
             const fetchProducts = async () => {
@@ -162,7 +169,7 @@ export default function ProductDetail() {
                         <img src={product.image} alt={product.name} className="w-full max-w-2xl h-auto" />
                     </div>
 
-    
+
                     <div className="p-5">
                         <div className="text-4xl md:text-6xl font-semibold mb-6">
                             <h1>{product.name}</h1>
