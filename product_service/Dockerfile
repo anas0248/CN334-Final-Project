@@ -30,4 +30,4 @@ ENV PORT=8888
 EXPOSE 8888
 
 # Start application with Gunicorn
-CMD gunicorn --bind 0.0.0.0:${PORT} --workers 3 product_service.wsgi:application
+CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:${PORT} --workers 3 product_service.wsgi:application"]
