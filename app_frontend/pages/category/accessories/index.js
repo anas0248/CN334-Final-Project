@@ -21,7 +21,7 @@ export default function Accessories() {
           throw new Error(message);
         }
         const data = await response.json();
-        setInfo(data);
+        setAccessories(data);
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -41,7 +41,7 @@ export default function Accessories() {
       const token = localStorage.getItem('jwt_access');
       console.log(token);
       try {
-        const res = await fetch(`${productapiurl}/cart`, {
+        const res = await fetch(`${productApiUrl}/cart`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -66,8 +66,8 @@ export default function Accessories() {
   useEffect(() => {
     const fetchTest = async () => {
       try {
-        console.log(`${url}/category/${category}/`);
-        const response = await fetch(`${productapiurl}/test-cors/`);
+        console.log(`${productApiUrl}/category/${category}/`);
+        const response = await fetch(`${productApiUrl}/test-cors/`);
         const data = await response.text();
         console.log(data);
       } catch (error) {
