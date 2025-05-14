@@ -54,7 +54,7 @@ export default function Header() {
 
       {/* Navigation Menu */}
       <nav
-        className={`absolute md:static text-center items-center top-16 left-0 w-full md:w-auto  bg-black/60 md:bg-transparent md:flex items-center space-y-4 md:space-y-0 md:space-x-4 p-4 md:p-0 transition-all duration-300 ${isMenuOpen ? 'block' : 'hidden'
+        className={`absolute md:static text-center items-center top-16 left-0 w-full md:w-auto bg-black/60 md:bg-transparent md:flex items-center space-y-4 md:space-y-0 md:space-x-4 p-4 md:p-0 transition-all duration-300 ${isMenuOpen ? 'block' : 'hidden'
           }`}
       >
         <Link href="/Home" className="hover:text-yellow-600 duration-500 block md:inline">HOME</Link>
