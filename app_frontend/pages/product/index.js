@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Swal from 'sweetalert2'; // นำเข้า SweetAlert2
+import Loading from '@/components/Loading';
 
 export default function ProductDetail() {
     const [product, setProduct] = useState(null);
@@ -148,7 +149,7 @@ export default function ProductDetail() {
     };
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center text-xl text-black">กำลังโหลด...</div>;
+        return <Loading/>
     }
 
     if (error) {
