@@ -20,7 +20,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,
 export default function Dashboard() {
   const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
   const userApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
-  
+
   const [data, setData] = useState({
     orders: 0,
     products: 0,
@@ -121,9 +121,9 @@ export default function Dashboard() {
 
         const totalIncomeByMonth = ordersResult.reduce((acc, order) => {
           if (order.status === 'paid' || order.status === 'completed') {
-            const orderDate = new Date(order.order_date); 
-            const month = orderDate.toLocaleString('default', { month: 'short' }); 
-            acc[month] = (acc[month] || 0) + parseFloat(order.total_price); 
+            const orderDate = new Date(order.order_date);
+            const month = orderDate.toLocaleString('default', { month: 'short' });
+            acc[month] = (acc[month] || 0) + parseFloat(order.total_price);
           }
           return acc;
         }, {});
@@ -150,7 +150,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <Loading/>
+      <Loading />
     );
   }
 
@@ -231,43 +231,43 @@ export default function Dashboard() {
   return (
     <>
       <Header />
-<main className="min-h-screen flex justify-center items-start bg-[#fdf6ec]">
-  <div className="w-full max-w-8xl p-4 mt-20">
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-10">
-      {/* First column */}
-      <div className="col-span-1 flex flex-row md:flex-col gap-6 md:gap-10">
-        <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
-          <h3 className="text-xl md:text-3xl text-yellow-600">Total Orders</h3>
-          <h4 className="text-3xl md:text-6xl text-yellow-600 self-end">{data.orders}</h4>
-        </div>
-        <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
-          <h3 className="text-xl md:text-3xl text-yellow-600">Total Product</h3>
-          <h4 className="text-3xl md:text-6xl text-yellow-600 self-end">{data.products}</h4>
-        </div>
-        <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
-          <h3 className="text-xl md:text-3xl text-yellow-600">Total Users</h3>
-          <h4 className="text-3xl md:text-6xl text-yellow-600 self-end">{data.users}</h4>
-        </div>
-      </div>
+      <main className="min-h-screen flex justify-center items-start bg-[#fdf6ec]">
+        <div className="w-full max-w-8xl p-4 mt-20">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-10">
+            {/* First column */}
+            <div className="col-span-1 flex flex-row md:flex-col gap-6 md:gap-10">
+              <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
+                <h3 className="text-xl md:text-3xl text-yellow-600">Total Orders</h3>
+                <h4 className="text-3xl md:text-6xl text-yellow-600 self-end">{data.orders}</h4>
+              </div>
+              <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
+                <h3 className="text-xl md:text-3xl text-yellow-600">Total Product</h3>
+                <h4 className="text-3xl md:text-6xl text-yellow-600 self-end">{data.products}</h4>
+              </div>
+              <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
+                <h3 className="text-xl md:text-3xl text-yellow-600">Total Users</h3>
+                <h4 className="text-3xl md:text-6xl text-yellow-600 self-end">{data.users}</h4>
+              </div>
+            </div>
 
-      {/* Second column */}
-      <div className="col-span-1 md:col-span-3 flex flex-col gap-6 md:gap-10">
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-2xl md:text-4xl text-yellow-600 mb-4">Total Income</h3>
-          <div className="w-full" style={{ height: '250px', minHeight: 200 }}>
-            <Bar data={barData} options={barOptions} />
+            {/* Second column */}
+            <div className="col-span-1 md:col-span-3 flex flex-col gap-6 md:gap-10">
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-2xl md:text-4xl text-yellow-600 mb-4">Total Income</h3>
+                <div className="w-full" style={{ height: '250px', minHeight: 200 }}>
+                  <Bar data={barData} options={barOptions} />
+                </div>
+              </div>
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-2xl md:text-4xl text-yellow-600 mb-4">All Category</h3>
+                <div className="w-full" style={{ height: '250px', minHeight: 200 }}>
+                  <Pie data={pieData} options={{ ...pieOptions, maintainAspectRatio: false }} />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-2xl md:text-4xl text-yellow-600 mb-4">All Category</h3>
-          <div className="w-full" style={{ height: '250px', minHeight: 200 }}>
-            <Pie data={pieData} options={{ ...pieOptions, maintainAspectRatio: false }} />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</main>
+      </main>
       <Footer />
     </>
   );

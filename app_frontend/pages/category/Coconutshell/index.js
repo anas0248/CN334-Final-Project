@@ -75,7 +75,8 @@ export default function Coconutshell() {
         console.error("Error fetching accessories:", error);
       }
     };
-
+ 
+    
     fetchTest();
   }, []);
 
