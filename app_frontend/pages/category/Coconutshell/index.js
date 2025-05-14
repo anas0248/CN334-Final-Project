@@ -42,7 +42,7 @@ export default function Coconutshell() {
       const token = localStorage.getItem('jwt_access');
       console.log(token);
       try {
-        const res = await fetch(`${productApiUrl}/cart`, {
+        const res = await fetch(`${productapiurl}/cart`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -67,8 +67,8 @@ export default function Coconutshell() {
   useEffect(() => {
     const fetchTest = async () => {
       try {
-        console.log(`${productApiUrl}/category/${category}/`);
-        const response = await fetch(`${productApiUrl}/test-cors/`);
+        console.log(`${url}/category/${category}/`);
+        const response = await fetch(`${productapiurl}/test-cors/`);
         const data = await response.text();
         console.log(data);
       } catch (error) {

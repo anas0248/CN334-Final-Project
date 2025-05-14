@@ -1,132 +1,74 @@
-
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useRouter } from 'next/router';
-import Footer from "@/components/Footer";
+export default function Category() {
+    return (
+        <>
+            <Header></Header>
+            
+            {/* <h1 className=" text-center text-black mt-20 text-7xl items-center justify-center">หมวดหมู่</h1> */}
+            <section className="p-6 sm:p-8 md:p-10 bg-[#fdf6ec] min-h-screen flex items-center justify-center mt-10">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto w-full">
 
-export default function Accessories() {
-  const [info, setInfo] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const category = 'woodenCraft';
-  const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
+    {/* จักสาน */}
+    <Link href="/category/basketry" className="bg-[#d4a276] text-white rounded-2xl p-4 shadow-md lg:col-span-3 flex flex-col justify-between hover:scale-105 duration-500  ">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <p className="text-4xl sm:text-6xl setData text-center">จักสาน</p>
+        <img src="3.png" alt="จักสาน" className="w-1/3 sm:w-1/6 h-auto" />
+      </div>
+    </Link>
 
-  useEffect(() => {
-    const fetchAccessories = async () => {
-      try {
-        console.log(`${productApiUrl}/category/${category}/`);
-        const response = await fetch(`${productApiUrl}/category/${category}/`);
-        if (!response.ok) {
-          const message = `An error occurred: ${response.status}`;
-          throw new Error(message);
-        }
-        const data = await response.json();
-        setInfo(data);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-        console.error("Error fetching accessories:", error);
-      }
-    };
+    {/* เครื่องปั้นดินเผา */}
+    <Link href="/category/earthenware" className="bg-[#c38e4d] text-white rounded-2xl p-4 shadow-md row-span-2 flex flex-col justify-between hover:scale-105 duration-500">
+      <div>
+        <p className="text-3xl sm:text-4xl setData">เครื่องปั้นดินเผา</p>
+        <img src="7.png" alt="เครื่องปั้น" className="w-full mt-4" />
+      </div>
+    </Link>
 
-    fetchAccessories();
-  }, []);
+    {/* สิ่งทอ */}
+    <Link href="/category/textiles" className="bg-[#f5d5c5] text-white rounded-2xl p-4 shadow-md row-span-2 hover:scale-105 duration-500">
+      <div>
+        <p className="text-4xl sm:text-6xl setData mt-2">สิ่งทอ</p>
+        <img src="2-Photoroom.png" alt="สิ่งทอ" className="w-full mt-4" />
+      </div>
+    </Link>
 
-  const [products, setProducts] = useState([]);
-  const [address, setAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("COD");    
-  useEffect(() => {
-    const fetchCart = async () => {
-      const token = localStorage.getItem('jwt_access');
-      console.log(token);
-      try {
-        const res = await fetch(`${productApiUrl}/cart`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await res.json();
-        if (res.ok) {
-          console.log(data);
-          setProducts(data); // สมมุติว่า backend ส่ง array ของสินค้าในตะกร้ามา
-        } else {
-          console.error(data);
-        }
-      } catch (err) {
-        console.error("Error fetching cart:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    {/* เครื่องประดับ */}
+    <Link href="/category/accessories" className="bg-[#9c6733] text-white rounded-2xl p-4 shadow-md lg:col-span-2 hover:scale-105 duration-500">
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+        <p className="text-3xl sm:text-5xl setData">เครื่องประดับ</p>
+        <img src="5-Photoroom.png" alt="เครื่องประดับ" className="w-2/3 sm:w-1/2" />
+      </div>
+    </Link>
 
-    fetchCart();
-  }, []);
+    {/* กลุ่มย่อย 2 ช่อง */}
+    <div className="grid grid-cols-2 gap-4 col-span-1">
+      {/* กะลาพร้าว */}
+      <Link href="/category/coconutshell" className="bg-[#FFF3D9] rounded-xl p-2 shadow text-center hover:scale-105 duration-500">
+        <p className="text-lg sm:text-2xl text-black">กะลาพร้าว</p>
+        <img src="10-Photoroom.png" className="w-full mx-auto" />
+      </Link>
 
-  useEffect(() => {
-    const fetchTest = async () => {
-      try {
-        console.log(`${productApiUrl}/category/${category}/`);
-        const response = await fetch(`${productApiUrl}/test-cors/`);
-        const data = await response.text();
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching accessories:", error);
-      }
-    };
+      {/* หัตถกรรมไม้ */}
+      <Link href="/category/woodenCraft" className="bg-[#754600] rounded-xl p-2 shadow text-center text-white hover:scale-105 duration-500">
+        <p className="text-lg sm:text-2xl">หัตถกรรมไม้</p>
+        <img src="8-Photoroom.png" className="w-full mx-auto" />
+      </Link>
+    </div>
 
-    fetchTest();
-  }, []);
+    {/* สมุนไพร */}
+    <Link href="/category/herb" className="bg-[#e3bba3] text-white rounded-2xl p-4 shadow-md lg:col-span-2 flex flex-col justify-between hover:scale-105 duration-500 ">
+      <div className="flex flex-col sm:flex-row justify-between items-center">
+        <p className="text-3xl sm:text-5xl setData text-center sm:text-left">สมุนไพร<br />เครื่องหอม</p>
+        <img src="9-Photoroom.png" alt="สมุนไพร" className="w-1/2 sm:w-1/4 mt-4 sm:mt-0" />
+      </div>
+    </Link>
+    
+  </div>
+</section>
 
-  
-  if (loading) {
-    return <p className="text-center py-8">กำลังโหลดเครื่องประดับ...</p>;
-  }
-
-  if (error) {
-    return <p className="text-center py-8 text-red-500">เกิดข้อผิดพลาดในการโหลดเครื่องประดับ</p>;
-  }
-  return (
-    <>
-      <Header />
-      <main className="bg-[#fdf6ec] px-4 sm:px-6 lg:px-8 mt-20">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-[#8d4c2f] my-8 sm:my-10">
-          หัตถกรรมไม้
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {info.map((item) => (
-            console.log('Anas',item),
-            <Link
-              key={item.id}
-              onClick={() => {
-                localStorage.setItem('productId', item.id);
-                console.log(`Product ID ${item.id} saved to localStorage`);
-              }}
-              href={'/product'}
-              className="transition-transform transform hover:scale-105 duration-300"
-            >
-              <div className="w-full bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden">
-                <img
-                  className="w-full h-48 sm:h-52 md:h-56 object-cover object-center"
-                  src={item.image}
-                  alt={item.name}
-                />
-                <div className="p-4 bg-[#D89C42]">
-                  <h5 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 text-center mb-1">
-                    {item.name}
-                  </h5>
-                  <p className="text-sm sm:text-base md:text-lg font-bold text-center text-gray-800">
-                    {item.price} บาท
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </main>
-      <Footer/>
-    </>
-  );
+            <Footer></Footer>
+        </>
+    );
 }

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Loading from "@/components/Loading";
 import Swal from 'sweetalert2';
 
+
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
