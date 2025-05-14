@@ -41,7 +41,7 @@ export default function Accessories() {
       const token = localStorage.getItem('jwt_access');
       console.log(token);
       try {
-        const res = await fetch(`${productapiurl}/cart`, {
+        const res = await fetch(`${productApiUrl}/cart`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -67,7 +67,7 @@ export default function Accessories() {
     const fetchTest = async () => {
       try {
         console.log(`${url}/category/${category}/`);
-        const response = await fetch(`${productapiurl}/test-cors/`);
+        const response = await fetch(`${productApiUrl}/test-cors/`);
         const data = await response.text();
         console.log(data);
       } catch (error) {
