@@ -2,51 +2,67 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Swal from 'sweetalert2'; // นำเข้า SweetAlert2
+import Swal from 'sweetalert2';
 
 export default function ProductDetail() {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const id = localStorage.getItem('productId');
+    const [id, setId] = useState(null); // ✅ ใช้ useState แทนการอ่าน localStorage ทันที
     const router = useRouter();
     const productApiUrl = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
 
     useEffect(() => {
-        if (id) {
-            const fetchProducts = async () => {
-                try {
-                    setLoading(true);
-                    const response = await fetch(`${productApiUrl}/products/`);
-                    if (!response.ok) {
-                        throw new Error(`ไม่สามารถดึงข้อมูลสินค้าได้: ${response.status}`);
-                    }
-                    const products = await response.json();
-
-                    const matchedProduct = products.find((product) => product.id === parseInt(id));
-                    if (!matchedProduct) {
-                        throw new Error('ไม่พบสินค้า');
-                    }
-
-                    setProduct(matchedProduct);
-                } catch (err) {
-                    setError(err.message);
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            fetchProducts();
+        if (typeof window !== 'undefined') {
+            const storedId = localStorage.getItem('productId');
+            if (storedId) {
+                setId(storedId);
+            } else {
+                setError("ไม่พบรหัสสินค้าใน localStorage");
+                setLoading(false);
+            }
         }
-    }, [id]);
+    }, []);
+
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`${productApiUrl}/products/`);
+                if (!response.ok) {
+                    throw new Error(`ไม่สามารถดึงข้อมูลสินค้าได้: ${response.status}`);
+                }
+
+                const products = await response.json();
+                const matchedProduct = products.find((product) => product.id === parseInt(id));
+
+                if (!matchedProduct) {
+                    throw new Error('ไม่พบสินค้า');
+                }
+
+                setProduct(matchedProduct);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, [id, productApiUrl]);
 
     const addToBasket = async () => {
         try {
+            const token = localStorage.getItem('jwt_access');
+            if (!token) throw new Error('กรุณาเข้าสู่ระบบ');
+
             const response = await fetch(`${productApiUrl}/cart/add/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('jwt_access')}`,
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     product_id: product.id,
@@ -63,28 +79,27 @@ export default function ProductDetail() {
                 });
                 localStorage.removeItem('jwt_access');
                 router.push('/login');
-                throw new Error(`ไม่สามารถเพิ่มสินค้าในตะกร้าได้: ${response.status}`);
+                return;
             }
 
             const data = await response.json();
             Swal.fire({
                 title: 'สำเร็จ!',
-                text: `${product.name} ถูกเพิ่มในตะกร้าสินค้าเรียบร้อยแล้ว!`,
+                text: `${product.name} ถูกเพิ่มในตะกร้าเรียบร้อยแล้ว!`,
                 icon: 'success',
                 confirmButtonText: 'ตกลง',
             });
             console.log('Cart response:', data);
         } catch (error) {
-            console.error('Error adding product to cart:', error);
+            console.error('Error adding to cart:', error);
             Swal.fire({
                 title: 'เกิดข้อผิดพลาด!',
-                text: 'ไม่สามารถเพิ่มสินค้าในตะกร้าได้ กรุณาลองใหม่อีกครั้ง',
+                text: error.message || 'ไม่สามารถเพิ่มสินค้าได้ กรุณาลองใหม่',
                 icon: 'error',
                 confirmButtonText: 'ตกลง',
             });
         }
     };
-
     const buyNow = async () => {
         try {
             const response = await fetch(`${productApiUrl}/orders/create/`, {
