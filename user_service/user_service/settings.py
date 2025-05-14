@@ -30,14 +30,29 @@ DEBUG = True
 # Allowed hosts
 ALLOWED_HOSTS = ['user-api.onrender.com', 'cn334-user-api.onrender.com']
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True # Or specify allowed origins:
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "https://cn334-frontend-btp1.onrender.com",
-    "http://localhost:3000",  # For local development
+# Keep only this CORS configuration:
+CORS_ALLOW_METHODS = [
+    'DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT',
 ]
-# Application definition
+CORS_ALLOW_HEADERS = [
+    'accept', 'accept-encoding', 'authorization',
+    'content-type', 'dnt', 'origin', 'user-agent',
+    'x-csrftoken', 'x-requested-with',
+]
 
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # ต้องอยู่บนสุด
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# Application definition
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
@@ -51,16 +66,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 ]
 
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
 
 ROOT_URLCONF = 'user_service.urls'
 
@@ -102,16 +107,12 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # CORS settings (หากใช้ django-cors-headers)
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://app-frontend.onrender.com",
-]
-
 # ตั้งค่า CSRF_TRUSTED_ORIGINS สำหรับ Django 4.0+
+# Add CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
-    "https://app-frontend.onrender.com",
-    "https://product-api.onrender.com",
+    "https://cn334-frontend-btp1.onrender.com",
     "https://user-api.onrender.com",
+    "http://localhost:3000",
 ]
 
 

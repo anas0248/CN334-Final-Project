@@ -29,15 +29,47 @@ DEBUG = True
 
 # Allowed hosts
 ALLOWED_HOSTS = [
+    'product-api.onrender.com', 
     'cn334-product-api.onrender.com',
-    # Add other production domains here
+    'localhost',
+    '127.0.0.1',
+]
+
+# Add CSRF trusted origins
+CSRF_TRUSTED_ORIGINS = [
+    "https://cn334-frontend-btp1.onrender.com",
+    "https://product-api.onrender.com",
+    "http://localhost:3000",
 ]
 
 # CORS settings
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "https://cn334-frontend-btp1.onrender.com",
-    "http://localhost:3000",  # For local development
+    "http://localhost:3000",
+    "https://app-frontend.onrender.com",
+]
+
+# Add these additional CORS settings
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 # Application definition
 
