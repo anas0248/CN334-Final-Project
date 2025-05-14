@@ -124,14 +124,11 @@ export default function Dashboard() {
             const orderDate = new Date(order.order_date); 
             const month = orderDate.toLocaleString('default', { month: 'short' }); 
             acc[month] = (acc[month] || 0) + parseFloat(order.total_price); 
-            
           }
-          console.log('order', acc);
           return acc;
         }, {});
 
         console.log('Total Income:', totalIncomeByMonth);
-
 
         setData({
           orders: ordersResult.length,
@@ -234,43 +231,43 @@ export default function Dashboard() {
   return (
     <>
       <Header />
-      <main className="h-screen justify-center items-center">
-        <div className="max-w-8xl p-4 mt-20">
-          <div className="grid grid-cols-4 gap-10">
-            {/* First column */}
-            <div className="col-span-1 grid grid-rows-4 gap-10 ">
-              <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
-                <h3 className="text-3xl text-yellow-600">Total Orders</h3>
-                <h4 className="text-6xl text-yellow-600 self-end">{data.orders}</h4>
-              </div>
-              <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
-                <h3 className="text-3xl  text-yellow-600">Total Product</h3>
-                <h4 className="text-6xl text-yellow-600 self-end">{data.products}</h4>
-              </div>
-              <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between ">
-                <h3 className="text-3xl text-yellow-600">Total Users</h3>
-                <h4 className="text-6xl text-yellow-600 self-end">{data.users}</h4>
-              </div>
-            </div>
+<main className="min-h-screen flex justify-center items-start bg-[#fdf6ec]">
+  <div className="w-full max-w-8xl p-4 mt-20">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-10">
+      {/* First column */}
+      <div className="col-span-1 flex flex-row md:flex-col gap-6 md:gap-10">
+        <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
+          <h3 className="text-xl md:text-3xl text-yellow-600">Total Orders</h3>
+          <h4 className="text-3xl md:text-6xl text-yellow-600 self-end">{data.orders}</h4>
+        </div>
+        <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
+          <h3 className="text-xl md:text-3xl text-yellow-600">Total Product</h3>
+          <h4 className="text-3xl md:text-6xl text-yellow-600 self-end">{data.products}</h4>
+        </div>
+        <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
+          <h3 className="text-xl md:text-3xl text-yellow-600">Total Users</h3>
+          <h4 className="text-3xl md:text-6xl text-yellow-600 self-end">{data.users}</h4>
+        </div>
+      </div>
 
-            {/* Second column */}
-            <div className="col-span-3 grid grid-rows-2 gap-10 ">
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-4xl text-yellow-600  ">Total Income</h3>
-                <div style={{ width: '100%', height: '300px' }}>
-                  <Bar data={barData} options={barOptions} />
-                </div>
-              </div>
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-4xl text-yellow-600">All Category</h3>
-                <div style={{ width: '100%', height: '300px' }}>
-                  <Pie data={pieData} options={{ ...pieOptions, maintainAspectRatio: false }} />
-                </div>
-              </div>
-            </div>
+      {/* Second column */}
+      <div className="col-span-1 md:col-span-3 flex flex-col gap-6 md:gap-10">
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-2xl md:text-4xl text-yellow-600 mb-4">Total Income</h3>
+          <div className="w-full" style={{ height: '250px', minHeight: 200 }}>
+            <Bar data={barData} options={barOptions} />
           </div>
         </div>
-      </main>
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-2xl md:text-4xl text-yellow-600 mb-4">All Category</h3>
+          <div className="w-full" style={{ height: '250px', minHeight: 200 }}>
+            <Pie data={pieData} options={{ ...pieOptions, maintainAspectRatio: false }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
       <Footer />
     </>
   );
