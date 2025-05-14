@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import Footer from "@/components/Footer";
+import Loading from "@/components/Loading";
 
 
 export default function Herb() {
@@ -82,7 +83,7 @@ export default function Herb() {
 
   
   if (loading) {
-    return <p className="text-center py-8">กำลังโหลดเครื่องประดับ...</p>;
+    return <Loading/>
   }
 
   if (error) {

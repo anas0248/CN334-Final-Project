@@ -159,7 +159,6 @@ const addadress = async () => {
     if (loading) {
         return (
             <>
-                <Header />
                 <Loading/>
             </>
         );

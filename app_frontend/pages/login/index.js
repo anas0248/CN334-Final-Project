@@ -5,9 +5,9 @@ export default function Login() {
   async function onLogin(event) {
     event.preventDefault();
     const formData = new FormData(event.target)
-    for (let pair of formData.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`);
-    }
+    // for (let pair of formData.entries()) {
+    //   console.log(`${pair[0]}: ${pair[1]}`);
+    // }
     const response = await fetch(`${userApiUrl}/api/token/`, {
       method: 'POST',
       body: formData,
@@ -30,7 +30,7 @@ export default function Login() {
       }
 
       localStorage.setItem('jwt_access', data.access);
-      console.log(localStorage.getItem('jwt_access'));
+      // console.log(localStorage.getItem('jwt_access'));
 
       await Swal.fire({
         title: "เข้าสู่ระบบสำเร็จ!",

@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
+import Loading from "@/components/Loading";
 
 export default function Accessories() {
   const [accessories, setAccessories] = useState([]);
@@ -81,8 +82,7 @@ export default function Accessories() {
   
   if (loading) {
     return <>
-    <p className="text-center py-8">กำลังโหลดเครื่องประดับ...</p>;
-  
+    <Loading/>
     </>
   }
 
