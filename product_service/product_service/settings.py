@@ -28,18 +28,20 @@ SECRET_KEY = 'django-insecure-q)d@zxjo28)dtwn9f_^xge^t*14)aoj!(sp^fzybd)dg&nd@$z
 DEBUG = True
 
 # Allowed hosts
-ALLOWED_HOSTS = ['cn334-user-api.onrender.com', 'user-api.onrender.com']
-
+ALLOWED_HOSTS = ['user-api.onrender.com', 'cn334-user-api.onrender.com']
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True  # Or specify allowed origins:
+CORS_ALLOW_ALL_ORIGINS = True # Or specify allowed origins:
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "https://cn334-frontend-btp1.onrender.com",
     "http://localhost:3000",  # For local development
 ]
+# Application definition
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,7 +51,6 @@ INSTALLED_APPS = [
     'product_management',
     'order_management',
     'rest_framework',
-    'corsheaders',
     'rest_framework_simplejwt',
 ]
 
@@ -58,7 +59,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
