@@ -49,9 +49,17 @@ export default function register() {
         });
         window.location.href = '/login';
       } else {
+        // แปลง error object เป็นข้อความ
+        let errorMsg = data?.message || data?.error || "ไม่สามารถสมัครสมาชิกได้ในขณะนี้";
+        if (data?.details) {
+          // รวมข้อความ error ของแต่ละฟิลด์
+          errorMsg += "\n" + data.details.map((detail) => {
+            return `${detail.message}`;
+          }).join("\n");
+        }
         await Swal.fire({
           title: "เกิดข้อผิดพลาดในการสมัครสมาชิก",
-          text: data?.message || "ไม่สามารถสมัครสมาชิกได้ในขณะนี้",
+          text: errorMsg,
           icon: "error",
           confirmButtonColor: "#D33"
         });
