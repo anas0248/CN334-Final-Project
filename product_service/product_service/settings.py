@@ -28,9 +28,12 @@ SECRET_KEY = 'django-insecure-q)d@zxjo28)dtwn9f_^xge^t*14)aoj!(sp^fzybd)dg&nd@$z
 DEBUG = True
 
 # Allowed hosts
-ALLOWED_HOSTS = ['user-api.onrender.com', 'cn334-user-api.onrender.com']
+ALLOWED_HOSTS = [
+    'cn334-product-api.onrender.com',
+    # Add other production domains here
+]
+
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True # Or specify allowed origins:
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "https://cn334-frontend-btp1.onrender.com",
