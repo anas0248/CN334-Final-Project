@@ -48,18 +48,12 @@ export default function register() {
           confirmButtonColor: "yellow",
         });
         window.location.href = '/login';
-      } else {
-        // แปลง error object เป็นข้อความ
-        let errorMsg = data?.message || data?.error || "ไม่สามารถสมัครสมาชิกได้ในขณะนี้";
-        if (data?.details) {
-          // รวมข้อความ error ของแต่ละฟิลด์
-          errorMsg += "\n" + data.details.map((detail) => {
-            return `${detail.message}`;
-          }).join("\n");
-        }
+       } else {
+        // รองรับ error ที่เป็น object และ array
+        const Errormessages = data.details.password2 || "ไม่สามารถสมัครสมาชิกได้ในขณะนี้";
         await Swal.fire({
           title: "เกิดข้อผิดพลาดในการสมัครสมาชิก",
-          text: errorMsg,
+          text: Errormessages,
           icon: "error",
           confirmButtonColor: "#D33"
         });
