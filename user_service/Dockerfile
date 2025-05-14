@@ -26,13 +26,8 @@ ENV POSTGRES_PASSWORD=postgres
 ENV POSTGRES_HOST=postgres
 ENV PORT=8888
 
-# Superuser credentials
-ENV DJANGO_SUPERUSER_USERNAME=admin
-ENV DJANGO_SUPERUSER_EMAIL=admin@example.com
-ENV DJANGO_SUPERUSER_PASSWORD=1150
-
 # Expose port
 EXPOSE 8888
 
 # Start application with Gunicorn
-CMD ["sh", "-c", "python manage.py migrate && python manage.py createsuperuser --noinput && gunicorn --bind 0.0.0.0:${PORT} --workers 3 user_service.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:${PORT} --workers 3 user_service.wsgi:application"]
