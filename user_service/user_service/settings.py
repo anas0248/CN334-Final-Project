@@ -29,9 +29,18 @@ DEBUG = True
 
 # Allowed hosts
 ALLOWED_HOSTS = ['user-api.onrender.com', 'cn334-user-api.onrender.com']
+
 # CORS settings
 CORS_ALLOW_CREDENTIALS = True
-# Keep only this CORS configuration:
+CORS_ALLOWED_ORIGINS = [
+    "https://cn334-frontend-btp1.onrender.com",
+    "http://localhost:3000",  # สำหรับการพัฒนาในเครื่อง
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://cn334-frontend-btp1.onrender.com",
+    "https://user-api.onrender.com",
+    "http://localhost:3000",
+]
 CORS_ALLOW_METHODS = [
     'DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT',
 ]
@@ -105,15 +114,6 @@ DATABASES = {
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# CORS settings (หากใช้ django-cors-headers)
-# ตั้งค่า CSRF_TRUSTED_ORIGINS สำหรับ Django 4.0+
-# Add CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = [
-    "https://cn334-frontend-btp1.onrender.com",
-    "https://user-api.onrender.com",
-    "http://localhost:3000",
-]
 
 
 # Password validation

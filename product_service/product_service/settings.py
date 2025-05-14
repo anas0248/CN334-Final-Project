@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-q)d@zxjo28)dtwn9f_^xge^t*14)aoj!(sp^fzybd)dg&nd@$z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False  # เปลี่ยนเป็น False สำหรับ Production
 
 # Allowed hosts
 ALLOWED_HOSTS = [
@@ -71,7 +71,6 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
-# Application definition
 
 # Application definition
 
@@ -90,7 +89,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # ต้องอยู่บนสุด
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -192,9 +191,4 @@ SIMPLE_JWT = {
 MEDIA_URL = '/app_frontend/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://127.0.0.1:3000", #  Adjust this to the origin of your frontend
-# ]
-#  OR, FOR DEVELOPMENT ONLY:
 CORS_ALLOW_ALL_ORIGINS = True #  THIS IS INSECURE FOR PRODUCTION
