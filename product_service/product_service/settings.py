@@ -27,9 +27,15 @@ SECRET_KEY = 'django-insecure-q)d@zxjo28)dtwn9f_^xge^t*14)aoj!(sp^fzybd)dg&nd@$z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['cn334-product-api.onrender.com']
+# Allowed hosts
+ALLOWED_HOSTS = ['cn334-user-api.onrender.com', 'user-api.onrender.com']
 
-
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = True  # Or specify allowed origins:
+CORS_ALLOWED_ORIGINS = [
+    "https://cn334-frontend-btp1.onrender.com",
+    "http://localhost:3000",  # For local development
+]
 
 # Application definition
 
