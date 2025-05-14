@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import Footer from "@/components/Footer";
 
 export default function Accessories() {
-  const [accessories, setAccessories] = useState([]);
+  const [info, setInfo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const category = 'woodenCraft';
@@ -67,7 +67,7 @@ export default function Accessories() {
   useEffect(() => {
     const fetchTest = async () => {
       try {
-        console.log(`${url}/category/${category}/`);
+        console.log(`${productApiUrl}/category/${category}/`);
         const response = await fetch(`${productApiUrl}/test-cors/`);
         const data = await response.text();
         console.log(data);
@@ -96,7 +96,7 @@ export default function Accessories() {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {accessories.map((item) => (
+          {info.map((item) => (
             console.log('Anas',item),
             <Link
               key={item.id}

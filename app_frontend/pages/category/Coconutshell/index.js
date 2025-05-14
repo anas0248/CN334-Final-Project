@@ -67,7 +67,7 @@ export default function Coconutshell() {
   useEffect(() => {
     const fetchTest = async () => {
       try {
-        console.log(`${url}/category/${category}/`);
+        console.log(`${productApiUrl}/category/${category}/`);
         const response = await fetch(`${productApiUrl}/test-cors/`);
         const data = await response.text();
         console.log(data);
