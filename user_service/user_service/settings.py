@@ -33,11 +33,11 @@ ALLOWED_HOSTS = ['user-api.onrender.com', 'cn334-user-api.onrender.com']
 # CORS settings
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "https://cn334-frontend-btp1.onrender.com",
+    "https://loconomy-frontend.onrender.com",
     "http://localhost:3000",  # สำหรับการพัฒนาในเครื่อง
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://cn334-frontend-btp1.onrender.com",
+    "https://loconomy-frontend.onrender.com",
     "https://user-api.onrender.com",
     "http://localhost:3000",
 ]

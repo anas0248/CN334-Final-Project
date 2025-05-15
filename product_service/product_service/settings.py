@@ -37,7 +37,7 @@ ALLOWED_HOSTS = [
 
 # Add CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
-    "https://cn334-frontend-btp1.onrender.com",
+    "https://loconomy-frontend.onrender.com",
     "https://product-api.onrender.com",
     "http://localhost:3000",
 ]
@@ -45,7 +45,7 @@ CSRF_TRUSTED_ORIGINS = [
 # CORS settings
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "https://cn334-frontend-btp1.onrender.com",
+    "https://loconomy-frontend.onrender.com",
     "http://localhost:3000",
     "https://app-frontend.onrender.com",
 ]
