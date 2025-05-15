@@ -42,7 +42,7 @@ export default function Header() {
 
   return (
     <header className="absolute top-0 left-0 w-full z-20 px-8 py-4 flex justify-between items-center bg-transparent  text-yellow-400 font-instrument">
-      <Link href="/Home" className="text-3xl font-jaini hover:text-yellow-600">LOCONOMY</Link>
+      <Link href="/" className="text-3xl font-jaini hover:text-yellow-600">LOCONOMY</Link>
 
       {/* Hamburger Menu Button */}
       <button
@@ -57,7 +57,7 @@ export default function Header() {
         className={`absolute md:static text-center items-center top-16 left-0 w-full md:w-auto bg-black/60 md:bg-transparent md:flex items-center space-y-4 md:space-y-0 md:space-x-4 p-4 md:p-0 transition-all duration-300 ${isMenuOpen ? 'block' : 'hidden'
           }`}
       >
-        <Link href="/Home" className="hover:text-yellow-600 duration-500 block md:inline">HOME</Link>
+        <Link href="/" className="hover:text-yellow-600 duration-500 block md:inline">HOME</Link>
         <Link href="/category" className="hover:text-yellow-600 duration-500 block md:inline">CATEGORY</Link>
 
         {/* แสดง Dashboard เฉพาะ Admin */}
