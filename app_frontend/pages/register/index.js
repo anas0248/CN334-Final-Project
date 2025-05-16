@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-const userApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
+
 
 export default function register() {
   async function onregister(event) {
@@ -8,6 +8,8 @@ export default function register() {
       const username = formData.get('username');
       const password = formData.get('password');
       const confirmPassword = formData.get('confirm-password');
+      const userApiUrl = process.env.NEXT_PUBLIC_USER_API_URL;
+      
 
       if (!username || !password || !confirmPassword) {
           alert("กรุณากรอกข้อมูลให้ครบถ้วน");
@@ -19,10 +21,12 @@ export default function register() {
           return;
       }
 
-      const registrationData = {
-        username: username,
-          password: password,
-      };
+const registrationData = {
+  username: username,
+  password1: password,
+  password2: confirmPassword,
+};
+
 
       try {
         const response = await fetch(`${userApiUrl}/register/`, {
@@ -32,15 +36,17 @@ export default function register() {
           },
           body: JSON.stringify(registrationData),
         });
+        console.log('Response:', response);
       
         const data = await response.json();
+        console.log('Response data:', data);
       
         if (response.ok) {
           await Swal.fire({
             title: "สร้างบัญชีผู้ใช้สำเร็จ!",
             text: "คุณสามารถเข้าสู่ระบบได้แล้ว",
             icon: "success",
-            confirmButtonColor: "yellow", // สีตามธีมของคุณ
+            confirmButtonColor: "yellow", 
           });
           window.location.href = '/login';
         } else {
@@ -50,6 +56,7 @@ export default function register() {
             icon: "error",
             confirmButtonColor: "#D33"
           });
+          console.log('Registration error:', data);
           console.error('Registration failed:', data);
         }
       
